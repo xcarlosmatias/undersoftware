@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- =========================================================
+       SEGURIDAD · meta tags
+       ========================================================= -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 base-uri 'self';
+                 form-action 'self';
+                 frame-ancestors 'none';
+                 object-src 'none';
+                 img-src 'self' data:;
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                 font-src 'self' https://fonts.gstatic.com;
+                 script-src 'self' 'unsafe-inline';
+                 connect-src 'self';
+                 upgrade-insecure-requests;" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy"
+        content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#f4ede1" />
+
+  <!-- SEO + Open Graph -->
+  <title>Undersoftware · Carlos Oliver — Ingeniería para banca crítica</title>
+  <meta name="description" content="Carlos Matías Oliver. Ingeniería que sostiene los flujos de pago de los que dependen empresas e instituciones financieras. Observabilidad transaccional, Cash Management, transformación digital." />
+  <meta name="author" content="Carlos Matías Oliver Carvajal" />
+  <link rel="canonical" href="https://www.undersoftware.cl/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.undersoftware.cl/" />
+  <meta property="og:title" content="Undersoftware · Carlos Oliver" />
+  <meta property="og:description" content="Ingeniería para los sistemas de pago que las empresas no pueden permitirse perder." />
+  <meta property="og:locale" content="es_CL" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Tipografía editorial -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       PALETA EDITORIAL · crema cálido + terracota + dorado + tinta
+       ============================================================ */
+    :root {
+      --paper:        #f4ede1;
+      --paper-soft:   #fbf6ec;
+      --paper-deep:   #ebe1cc;
+      --ink:          #1a1410;
+      --ink-soft:     #4a3f35;
+      --ink-mute:     #7d6f5f;
+      --ink-faint:    #a89a85;
+      --line:         #d4c8b0;
+      --line-strong:  #b8a988;
+      --rust:         #c0481f;
+      --rust-deep:    #9a3614;
+      --gold:         #b8842d;
+      --gold-soft:    #d8a85a;
+      --midnight:     #1d2848;
+
+      --serif: 'Instrument Serif', 'Times New Roman', serif;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+      --max: 1240px;
+      --shadow-soft: 0 1px 0 rgba(26,20,16,0.05), 0 8px 32px -16px rgba(26,20,16,0.18);
+    }
+
+    /* ============================================================
+       RESET
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.6;
+      font-feature-settings: "ss01", "cv11";
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    ::selection { background: var(--rust); color: var(--paper-soft); }
+
+    /* Textura sutil de papel — SVG noise embebido */
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.08  0 0 0 0 0.06  0 0 0 0.035 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 1;
+      mix-blend-mode: multiply;
+    }
+    body::after {
+      content: "";
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(900px 600px at 90% -10%, rgba(192, 72, 31, 0.08), transparent 60%),
+        radial-gradient(700px 500px at -10% 110%, rgba(184, 132, 45, 0.10), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================================
+       PRIMITIVOS
+       ============================================================ */
+    .wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 2;
+    }
+
+    h1, h2, h3, h4 { color: var(--ink); margin: 0; font-weight: 400; }
+    em.it { font-family: var(--serif); font-style: italic; }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rust);
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 24px; height: 1px;
+      background: var(--rust);
+    }
+
+    /* ============================================================
+       NAV
+       ============================================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(244, 237, 225, 0.85);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+    .brand {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-style: italic;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+    .brand span.dot { color: var(--rust); }
+    .brand span.suffix {
+      font-family: var(--mono);
+      font-style: normal;
+      font-size: 11px;
+      color: var(--ink-mute);
+      letter-spacing: 0.06em;
+      margin-left: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+    }
+    .nav-links a {
+      color: var(--ink-soft);
+      transition: color 0.2s;
+      position: relative;
+      padding-bottom: 4px;
+    }
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--rust);
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--rust); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 9px 16px;
+      background: var(--ink);
+      color: var(--paper-soft);
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover {
+      background: var(--rust);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero { padding: 80px 0 60px; position: relative; }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(54px, 9.5vw, 144px);
+      line-height: 0.92;
+      letter-spacing: -0.025em;
+      margin: 32px 0 0;
+      color: var(--ink);
+      font-weight: 400;
+      max-width: 14ch;
+    }
+    .hero h1 .swirl {
+      font-style: italic;
+      color: var(--rust);
+      position: relative;
+      display: inline-block;
+    }
+    .hero h1 .swirl::after {
+      content: "";
+      position: absolute;
+      left: -2%; right: -2%;
+      bottom: 6%;
+      height: 8px;
+      background: var(--gold-soft);
+      opacity: 0.5;
+      z-index: -1;
+    }
+    .hero h1 small {
+      font-family: var(--mono);
+      font-size: 0.18em;
+      font-style: normal;
+      color: var(--ink-mute);
+      vertical-align: super;
+      letter-spacing: 0.1em;
+    }
+
+    .hero-sub-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 60px;
+      margin-top: 56px;
+      align-items: end;
+    }
+    @media (max-width: 920px) {
+      .hero-sub-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
+
+    .hero p.lede {
+      font-family: var(--serif);
+      font-size: clamp(20px, 2.4vw, 28px);
+      line-height: 1.4;
+      color: var(--ink-soft);
+      max-width: 30ch;
+      margin: 0;
+    }
+    .hero p.lede strong {
+      font-style: italic;
+      color: var(--rust);
+      font-weight: 400;
+    }
+
+    .hero-meta {
+      border-left: 1px solid var(--line-strong);
+      padding-left: 28px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-soft);
+      line-height: 1.9;
+    }
+    .hero-meta dt {
+      color: var(--ink-faint);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-size: 10px;
+      margin-top: 16px;
+    }
+    .hero-meta dt:first-child { margin-top: 0; }
+    .hero-meta dd { margin: 2px 0 0; color: var(--ink); }
+
+    .hero-cta {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 42px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 24px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
+      border: 1px solid transparent;
+    }
+    .btn-primary {
+      background: var(--rust);
+      color: var(--paper-soft);
+    }
+    .btn-primary:hover {
+      background: var(--rust-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px -12px rgba(192, 72, 31, 0.5);
+    }
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--line-strong);
+      color: var(--ink);
+    }
+    .btn-ghost:hover {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--paper-soft);
+    }
+    .btn-arrow { display: inline-block; transition: transform 0.25s; }
+    .btn:hover .btn-arrow { transform: translateX(4px); }
+
+    .edition-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      margin-top: 80px;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-mute);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .edition-strip span.edition {
+      color: var(--ink);
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      text-transform: none;
+    }
+    .edition-strip .dot-sep { color: var(--rust); margin: 0 12px; }
+
+    /* ============================================================
+       MANIFIESTO
+       ============================================================ */
+    .manifiesto { padding: 130px 0; }
+    .manifiesto-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 80px;
+      align-items: start;
+    }
+    @media (max-width: 920px) {
+      .manifiesto-grid { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    .manifiesto-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      padding-top: 12px;
+      border-top: 1px solid var(--ink);
+      width: fit-content;
+    }
+    .manifiesto-label strong {
+      display: block;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 32px;
+      color: var(--rust);
+      letter-spacing: -0.01em;
+      text-transform: none;
+      margin-top: 8px;
+      font-weight: 400;
+    }
+
+    .manifiesto-prose {
+      font-family: var(--serif);
+      font-size: 24px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .manifiesto-prose .drop-cap {
+      float: left;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 110px;
+      line-height: 0.85;
+      color: var(--rust);
+      padding: 12px 14px 0 0;
+      margin-top: 4px;
+    }
+    .manifiesto-prose p { margin: 0 0 24px; }
+    .manifiesto-prose p:last-child { margin-bottom: 0; }
+    .manifiesto-prose strong {
+      font-weight: 400;
+      color: var(--rust);
+      font-style: italic;
+    }
+    .manifiesto-prose .gold {
+      background: linear-gradient(transparent 60%, rgba(216, 168, 90, 0.45) 60%);
+      padding: 0 4px;
+    }
+
+    /* ============================================================
+       SECTION SCAFFOLDING
+       ============================================================ */
+    section { padding: 120px 0; position: relative; z-index: 2; }
+    .section-head {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 60px;
+      margin-bottom: 64px;
+      align-items: end;
+    }
+    @media (max-width: 768px) {
+      .section-head { grid-template-columns: 1fr; gap: 16px; }
+    }
+    .section-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--ink-mute);
+      text-transform: uppercase;
+      padding-top: 8px;
+      border-top: 1px solid var(--line-strong);
+    }
+    .section-num .roman {
+      display: block;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 64px;
+      color: var(--rust);
+      line-height: 1;
+      margin-top: 8px;
+      letter-spacing: -0.02em;
+      text-transform: none;
+      font-weight: 400;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 5.5vw, 64px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .section-title em {
+      font-style: italic;
+      color: var(--rust);
+    }
+
+    /* ============================================================
+       PERFIL
+       ============================================================ */
+    .perfil-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    @media (max-width: 920px) { .perfil-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+    .perfil-prose p {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+      margin: 0 0 22px;
+    }
+    .perfil-prose p strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .perfil-prose .pull {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.45;
+      padding: 4px 0 4px 28px;
+      border-left: 2px solid var(--rust);
+      margin: 32px 0;
+    }
+
+    .credentials {
+      background: var(--paper-deep);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+    }
+    .credentials-head {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--line);
+      background: var(--paper-soft);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      display: flex;
+      justify-content: space-between;
+    }
+    .credentials-head .stamp {
+      color: var(--rust);
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .credentials-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--line);
+    }
+    .credentials-row:last-child { border-bottom: none; }
+    .credentials-cell {
+      padding: 24px;
+      border-right: 1px solid var(--line);
+    }
+    .credentials-cell:last-child { border-right: none; }
+    .credentials-cell .k {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--ink-mute);
+      text-transform: uppercase;
+    }
+    .credentials-cell .v {
+      font-family: var(--serif);
+      font-size: 36px;
+      line-height: 1;
+      color: var(--ink);
+      margin-top: 10px;
+      letter-spacing: -0.01em;
+    }
+    .credentials-cell .v em {
+      font-style: italic;
+      color: var(--rust);
+    }
+    .credentials-cell .meta {
+      font-size: 12px;
+      color: var(--ink-mute);
+      margin-top: 8px;
+    }
+
+    /* ============================================================
+       STACK
+       ============================================================ */
+    .stack-row {
+      display: grid;
+      grid-template-columns: 280px 1fr 80px 100px;
+      gap: 28px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+      font-size: 14px;
+      transition: background 0.25s;
+    }
+    .stack-row:hover { background: rgba(192, 72, 31, 0.03); }
+    .stack-row:first-of-type { border-top: 1px solid var(--ink); }
+
+    .stack-label {
+      font-family: var(--serif);
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.1;
+    }
+    .stack-tools {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--ink-mute);
+      letter-spacing: 0.02em;
+    }
+    .stack-bar {
+      position: relative;
+      height: 2px;
+      background: var(--line);
+    }
+    .stack-bar-fill {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      background: linear-gradient(90deg, var(--rust), var(--gold));
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+    }
+    .stack-score {
+      font-family: var(--serif);
+      font-size: 28px;
+      color: var(--rust);
+      text-align: right;
+      letter-spacing: -0.01em;
+    }
+    .stack-years {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-mute);
+      text-align: right;
+    }
+
+    @media (max-width: 768px) {
+      .stack-row { grid-template-columns: 1fr; gap: 8px; padding: 22px 0; }
+      .stack-tools { order: 3; }
+      .stack-bar { order: 2; }
+      .stack-score { text-align: left; order: 4; font-size: 22px; }
+      .stack-years { text-align: left; order: 5; }
+    }
+
+    .stack-summary {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    @media (max-width: 768px) { .stack-summary { grid-template-columns: 1fr; } }
+    .summary-cell {
+      padding: 36px 32px;
+      background: var(--paper-soft);
+      position: relative;
+    }
+    .summary-cell .label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+    .summary-cell .value {
+      font-family: var(--serif);
+      font-size: 64px;
+      color: var(--ink);
+      line-height: 1;
+      margin: 16px 0 12px;
+      letter-spacing: -0.025em;
+    }
+    .summary-cell .value em {
+      font-style: italic;
+      color: var(--rust);
+    }
+    .summary-cell .desc {
+      font-size: 13px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+
+    /* ============================================================
+       LÍNEAS DE TRABAJO
+       ============================================================ */
+    .servicios {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+    @media (max-width: 768px) { .servicios { grid-template-columns: 1fr; } }
+
+    .servicio {
+      padding: 40px;
+      background: var(--paper-soft);
+      position: relative;
+      transition: background 0.3s;
+      overflow: hidden;
+    }
+    .servicio:hover { background: var(--paper); }
+    .servicio::after {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 40px; right: 40px;
+      height: 1px;
+      background: var(--rust);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+    }
+    .servicio:hover::after { transform: scaleX(1); }
+
+    .servicio-num {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 14px;
+      color: var(--rust);
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+    .servicio-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rust);
+      padding: 5px 12px;
+      border: 1px solid rgba(192, 72, 31, 0.4);
+      border-radius: 2px;
+      margin-bottom: 18px;
+    }
+    .servicio h3 {
+      font-family: var(--serif);
+      font-size: 32px;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 16px;
+      letter-spacing: -0.015em;
+    }
+    .servicio h3 em {
+      font-style: italic;
+      color: var(--rust);
+    }
+    .servicio .descripcion {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      margin: 0 0 20px;
+    }
+    .servicio .resultado {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 17px;
+      color: var(--ink);
+      line-height: 1.4;
+      margin: 16px 0 24px;
+      padding: 12px 0;
+      border-top: 1px dashed var(--line-strong);
+      border-bottom: 1px dashed var(--line-strong);
+    }
+    .servicio .resultado::before {
+      content: "Resultado · ";
+      font-family: var(--mono);
+      font-style: normal;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .servicio-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      padding: 4px 9px;
+      background: var(--paper-deep);
+      color: var(--ink-soft);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      letter-spacing: 0.02em;
+    }
+
+    /* ============================================================
+       QUOTE BLOCK
+       ============================================================ */
+    .quote-block {
+      padding: 130px 0;
+      background: var(--ink);
+      color: var(--paper-soft);
+      position: relative;
+      overflow: hidden;
+    }
+    .quote-block::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--rust), var(--gold), transparent);
+    }
+    .quote-block::after {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--rust), transparent);
+    }
+    .quote-block .wrap { max-width: 1000px; }
+    .quote-mark {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 200px;
+      line-height: 0.5;
+      color: var(--rust);
+      display: block;
+      margin-bottom: -10px;
+    }
+    .quote-text {
+      font-family: var(--serif);
+      font-size: clamp(28px, 4vw, 52px);
+      line-height: 1.2;
+      color: var(--paper-soft);
+      letter-spacing: -0.015em;
+    }
+    .quote-text em {
+      font-style: italic;
+      color: var(--gold-soft);
+    }
+    .quote-attr {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-faint);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .quote-attr::before {
+      content: "";
+      width: 40px; height: 1px;
+      background: var(--gold);
+    }
+
+    /* ============================================================
+       TIMELINE
+       ============================================================ */
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 40px;
+      padding: 32px 0;
+      border-top: 1px solid var(--line);
+      transition: padding-left 0.3s;
+    }
+    .timeline-row:last-child { border-bottom: 1px solid var(--line); }
+    .timeline-row:hover { padding-left: 12px; }
+
+    .timeline-period {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-soft);
+      letter-spacing: 0.06em;
+      padding-top: 6px;
+    }
+    .timeline-period strong {
+      display: block;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--rust);
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+      font-weight: 400;
+    }
+    .timeline-content h4 {
+      font-family: var(--serif);
+      font-size: 26px;
+      color: var(--ink);
+      line-height: 1.15;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    .timeline-role {
+      color: var(--ink-mute);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .timeline-content p {
+      font-size: 15px;
+      color: var(--ink-soft);
+      line-height: 1.65;
+      margin: 0;
+      max-width: 70ch;
+    }
+
+    @media (max-width: 768px) {
+      .timeline-row { grid-template-columns: 1fr; gap: 8px; }
+    }
+
+    /* ============================================================
+       CONTACTO
+       ============================================================ */
+    .contacto {
+      padding: 140px 0 100px;
+      background: var(--paper-deep);
+      border-top: 1px solid var(--line-strong);
+      position: relative;
+    }
+    .contacto-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    @media (max-width: 920px) { .contacto-grid { grid-template-columns: 1fr; gap: 48px; } }
+
+    .contacto h2 {
+      font-family: var(--serif);
+      font-size: clamp(48px, 7vw, 92px);
+      line-height: 0.95;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+    }
+    .contacto h2 em {
+      font-style: italic;
+      color: var(--rust);
+    }
+    .contacto p.kicker {
+      margin-top: 24px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.45;
+      color: var(--ink-soft);
+      max-width: 36ch;
+    }
+
+    .contacto-card {
+      background: var(--paper-soft);
+      border: 1px solid var(--line);
+      padding: 8px;
+      box-shadow: var(--shadow-soft);
+    }
+    .contacto-card-inner {
+      border: 1px solid var(--line);
+      padding: 28px;
+    }
+    .contacto-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 13px;
+      transition: padding 0.2s;
+    }
+    .contacto-row:last-child { border-bottom: none; }
+    .contacto-row:hover { padding-left: 6px; }
+    .contacto-row .key {
+      color: var(--ink-mute);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .contacto-row .val {
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .contacto-row a.val:hover { color: var(--rust); }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    footer {
+      padding: 36px 0 48px;
+      border-top: 1px solid var(--line-strong);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-mute);
+      letter-spacing: 0.08em;
+      background: var(--paper);
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+    footer .signature {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    footer .signature .dot { color: var(--rust); }
+
+    /* ============================================================
+       UTILS
+       ============================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =============== NAV =============== -->
+  <nav class="nav" aria-label="Principal">
+    <div class="wrap nav-inner">
+      <a href="#top" class="brand" aria-label="Inicio">
+        Undersoftware<span class="dot">.</span>
+        <span class="suffix">CL · 2026</span>
+      </a>
+      <div class="nav-links">
+        <a href="#manifiesto">Manifiesto</a>
+        <a href="#perfil">Perfil</a>
+        <a href="#capacidades">Capacidades</a>
+        <a href="#trabajo">Trabajo</a>
+        <a href="#trayectoria">Trayectoria</a>
+      </div>
+      <a class="nav-cta" href="#contacto">Conversemos →</a>
+    </div>
+  </nav>
+
+  <!-- =============== HERO =============== -->
+  <header class="hero" id="top">
+    <div class="wrap">
+
+      <span class="eyebrow">Carlos Oliver Carvajal · Banca · Pagos · Operación crítica</span>
+
+      <h1>
+        Que un pago<br />
+        nunca falle <span class="swirl">es</span><br />
+        un trabajo a<br />
+        <span class="swirl">tiempo completo<small>.</small></span>
+      </h1>
+
+      <div class="hero-sub-grid">
+        <div>
+          <p class="lede">
+            Lidero la ingeniería detrás de los flujos de pago de los que dependen
+            <strong>empresas, instituciones financieras</strong> y, al final del día,
+            personas que necesitan que su dinero llegue.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#contacto">
+              Conversemos del proyecto
+              <span class="btn-arrow">→</span>
+            </a>
+            <a class="btn btn-ghost" href="#capacidades">Ver capacidades</a>
+          </div>
+        </div>
+
+        <aside class="hero-meta" aria-label="Identidad profesional">
+          <dl>
+            <dt>Disciplina</dt>
+            <dd>Ingeniería de Software · Liderazgo de Proyectos TI</dd>
+            <dt>Especialidad</dt>
+            <dd>Observabilidad transaccional · Cash Management</dd>
+            <dt>Marcos</dt>
+            <dd>PMI · ITIL 4 · Agile</dd>
+            <dt>Base</dt>
+            <dd>Santiago, Chile · Operación remota</dd>
+            <dt>Sectores</dt>
+            <dd>Banca · Telco · Data Center</dd>
+          </dl>
+        </aside>
+      </div>
+
+      <div class="edition-strip">
+        <span><span class="edition">Edición</span> &nbsp; · &nbsp; Vol. I — Pieza única</span>
+        <span>2026 <span class="dot-sep">●</span> Construido con foco</span>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- =============== MANIFIESTO =============== -->
+  <section class="manifiesto" id="manifiesto">
+    <div class="wrap">
+      <div class="manifiesto-grid">
+        <div class="manifiesto-label">
+          Manifiesto
+          <strong>Por qué este trabajo importa.</strong>
+        </div>
+        <div class="manifiesto-prose">
+          <p>
+            <span class="drop-cap">H</span>ay una economía visible — la que sale en
+            los noticieros, la que se mide en bolsa, la que tiene voceros. Y hay
+            otra <em class="it">silenciosa</em>, hecha de transferencias LBTR a las
+            tres de la mañana, archivos SWIFT que cuadran al céntimo, conciliaciones
+            que ningún cliente ve. <strong>Mi trabajo vive ahí.</strong>
+          </p>
+          <p>
+            Cuando una empresa exportadora no recibe su pago a tiempo,
+            <span class="gold">alguien no produce</span>. Cuando un sistema
+            transaccional de banca empresa se cae, no es un inconveniente técnico:
+            son cadenas de proveedores, sueldos, decisiones que se posponen.
+          </p>
+          <p>
+            Por eso no escribo código para que funcione. Lo escribo, lo opero
+            y lo gobierno para que <em class="it">no falle nunca</em> — y, cuando
+            las cosas salen mal, para que el sistema sepa pedir ayuda antes que
+            el cliente sepa que algo pasó.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== PERFIL =============== -->
+  <section id="perfil">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-num">
+          Sección · Perfil
+          <span class="roman">I.</span>
+        </div>
+        <h2 class="section-title">
+          Más de una década en la <em>capa que la mayoría no ve.</em>
+        </h2>
+      </div>
+
+      <div class="perfil-grid">
+        <div class="perfil-prose">
+          <p>
+            Empecé en NOC monitoreando redes <strong>MPLS</strong> para Telefónica.
+            Pasé por arquitectura de <strong>Data Center bajo norma ANSI-TIA 942</strong>
+            en HP Enterprise. Hoy lidero proyectos de observabilidad transaccional
+            <em class="it">end-to-end</em> en <strong>Banco de Crédito e Inversiones (BCI)</strong>,
+            donde la pregunta no es si el sistema escala, sino si responde correctamente
+            cuando son las 3 AM y un cliente Wholesale ejecuta una transferencia LBTR
+            de millones.
+          </p>
+          <div class="pull">
+            La intersección de tres ejes — ingeniería, gestión y dominio bancario —
+            es escasa. Ahí entrego más valor.
+          </div>
+          <p>
+            Mi trabajo cruza <strong>ingeniería de software</strong>,
+            <strong>gestión de proyectos bajo PMI / ITIL 4</strong> y conocimiento profundo
+            del dominio bancario: SWIFT (MT101/103/940), LBTR, Pagos Masivos, PNOL, ODP,
+            integraciones H2H/B2B, Cash Management. Lo combino con datos —
+            PostgreSQL, Databricks, Kafka, Power BI — para construir tableros de
+            inteligencia operacional que reducen los tiempos de detección de incidentes.
+          </p>
+          <p>
+            No vendo horas. Vendo <em class="it">la diferencia</em> entre un proyecto
+            que llega con desviación crítica al comité de riesgos, y uno que se entrega
+            sin sobresaltos.
+          </p>
+        </div>
+
+        <div class="credentials">
+          <div class="credentials-head">
+            <span>Credenciales · resumen</span>
+            <span class="stamp">verificable</span>
+          </div>
+          <div class="credentials-row">
+            <div class="credentials-cell">
+              <div class="k">Trayectoria</div>
+              <div class="v">12<em>+</em></div>
+              <div class="meta">años en operación crítica<br />Banca · Telco · DC</div>
+            </div>
+            <div class="credentials-cell">
+              <div class="k">BCI</div>
+              <div class="v">07</div>
+              <div class="meta">años continuos<br />4 roles, ascenso constante</div>
+            </div>
+          </div>
+          <div class="credentials-row">
+            <div class="credentials-cell">
+              <div class="k">Postgrado</div>
+              <div class="v">M<em>.Sc</em></div>
+              <div class="meta">Dirección de Proyectos TI<br />U. Central · 2021–2023</div>
+            </div>
+            <div class="credentials-cell">
+              <div class="k">Marcos</div>
+              <div class="v">3<em>·</em>0</div>
+              <div class="meta">PMI · ITIL 4 · Agile<br />Aplicados en producción</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== CAPACIDADES =============== -->
+  <section id="capacidades">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-num">
+          Sección · Capacidades técnicas
+          <span class="roman">II.</span>
+        </div>
+        <h2 class="section-title">
+          Las herramientas, calibradas por <em>profundidad y uso real.</em>
+        </h2>
+      </div>
+
+      <div class="stack-list">
+        <div class="stack-row reveal" data-score="95">
+          <div class="stack-label">Banca de pagos & SWIFT</div>
+          <div class="stack-tools">MT101 · MT103 · MT940 · LBTR · PNOL · ODP · H2H · B2B</div>
+          <div class="stack-bar"><div class="stack-bar-fill" data-w="95"></div></div>
+          <div class="stack-score">0.95</div>
+          <div class="stack-years">7+ años</div>
+        </div>
+        <div class="stack-row reveal" data-score="92">
+          <div class="stack-label">Gestión de proyectos TI</div>
+          <div class="stack-tools">PMI · Clarity · ITIL 4 · Agile · Stakeholders</div>
+          <div class="stack-bar"><div class="stack-bar-fill" data-w="92"></div></div>
+          <div class="stack-score">0.92</div>
+          <div class="stack-years">Magíster + práctica</div>
+        </div>
+        <div class="stack-row reveal" data-score="90">
+          <div class="stack-label">Observabilidad & monitoreo</div>
+          <div class="stack-tools">Nagios · SolarWinds · Control-M · diagnóstico end-to-end</div>
+          <div class="stack-bar"><div class="stack-bar-fill" data-w="90"></div></div>
+          <div class="stack-score">0.90</div>
+          <div class="stack-years">5+ años</div>
+        </div>
+        <div class="stack-row reveal" data-score="88">
+          <div class="stack-label">Datos & SQL</div>
+          <div class="stack-tools">PostgreSQL · SQL Server · Sybase · MongoDB · Redis</div>
+          <div class="stack-bar"><div class="stack-bar-fill" data-w="88"></div></div>
+          <div class="stack-score">0.88</div>
+          <div class="stack-years">5+ años</div>
+        </div>
+        <div class="stack-row reveal" data-score="80">
+          <div class="stack-label">Infraestructura & redes</div>
+          <div class="stack-tools">MPLS · ANSI-TIA 942 · Data Center · Unix · Git</div>
+          <div class="stack-bar"><div class="stack-bar-fill" data-w="80"></div></div>
+          <div class="stack-score">0.80</div>
+          <div class="stack-years">7+ años</div>
+        </div>
+        <div class="stack-row reveal" data-score="78">
+          <div class="stack-label">Cloud data & streaming</div>
+          <div class="stack-tools">Databricks · Kafka · Power BI · pipelines IA</div>
+          <div class="stack-bar"><div class="stack-bar-fill" data-w="78"></div></div>
+          <div class="stack-score">0.78</div>
+          <div class="stack-years">2–3 años</div>
+        </div>
+        <div class="stack-row reveal" data-score="70">
+          <div class="stack-label">Desarrollo & scripting</div>
+          <div class="stack-tools">C# · PHP · JavaScript · scripts batch · automatización</div>
+          <div class="stack-bar"><div class="stack-bar-fill" data-w="70"></div></div>
+          <div class="stack-score">0.70</div>
+          <div class="stack-years">Aplicado en proyectos internos</div>
+        </div>
+      </div>
+
+      <div class="stack-summary">
+        <div class="summary-cell">
+          <div class="label">Índice global</div>
+          <div class="value"><em>84</em><span style="font-size:34px;color:var(--ink-mute);">.7</span></div>
+          <div class="desc">Ponderado real sobre los 7 dominios. Perfil senior con dos ejes dominantes.</div>
+        </div>
+        <div class="summary-cell">
+          <div class="label">Eje dominante</div>
+          <div class="value">Pagos<em> + </em>PMO</div>
+          <div class="desc">Ingeniería operada bajo gobernanza. La intersección donde el perfil es escaso.</div>
+        </div>
+        <div class="summary-cell">
+          <div class="label">Punto de palanca</div>
+          <div class="value">Datos<em>·IA</em></div>
+          <div class="desc">Subir Databricks · Kafka · Power BI desbloquea inteligencia operacional bancaria.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== QUOTE =============== -->
+  <section class="quote-block">
+    <div class="wrap">
+      <span class="quote-mark">&ldquo;</span>
+      <div class="quote-text">
+        Un sistema bancario no se evalúa cuando funciona.<br />
+        Se evalúa <em>cuando todo se cae</em> &mdash; y depende de quién esté ahí
+        que vuelva a levantarse.
+      </div>
+      <div class="quote-attr">Lección de doce años en operación crítica</div>
+    </div>
+  </section>
+
+  <!-- =============== LÍNEAS DE TRABAJO =============== -->
+  <section id="trabajo">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-num">
+          Sección · Líneas de trabajo
+          <span class="roman">III.</span>
+        </div>
+        <h2 class="section-title">
+          Lo que <em>construyo y opero</em> para empresas e instituciones.
+        </h2>
+      </div>
+
+      <div class="servicios">
+
+        <article class="servicio">
+          <div class="servicio-num"><em class="it">i</em>. — Insignia</div>
+          <span class="servicio-tag">Observabilidad</span>
+          <h3>Observabilidad <em>transaccional</em> end-to-end</h3>
+          <p class="descripcion">
+            Diseño plataformas que capturan eventos desde el canal del cliente
+            (H2H, B2B) hasta el LBTR del Banco Central. Trazas correlacionadas,
+            alertas sobre desviaciones, dashboards de tiempos de respuesta.
+          </p>
+          <div class="resultado">
+            Los equipos detectan incidentes antes que los clientes; el comité
+            recibe métricas, no excusas.
+          </div>
+          <div class="servicio-stack">
+            <span class="chip">Kafka</span>
+            <span class="chip">PostgreSQL</span>
+            <span class="chip">Power BI</span>
+            <span class="chip">Databricks</span>
+            <span class="chip">SWIFT</span>
+          </div>
+        </article>
+
+        <article class="servicio">
+          <div class="servicio-num"><em class="it">ii</em>. — Producto</div>
+          <span class="servicio-tag">Cash Management</span>
+          <h3>Posición de caja <em>multi-banco</em></h3>
+          <p class="descripcion">
+            Consolido extractos MT940 de múltiples bancos, normalizo saldos y
+            proyecto cash-flow. Para tesorerías corporativas que hoy reconcilian
+            con planillas de Excel y sin trazabilidad.
+          </p>
+          <div class="resultado">
+            La tesorería deja de operar a ciegas. La decisión financiera se
+            toma con datos del día, no del mes pasado.
+          </div>
+          <div class="servicio-stack">
+            <span class="chip">SWIFT MT940</span>
+            <span class="chip">SQL</span>
+            <span class="chip">APIs</span>
+            <span class="chip">Power BI</span>
+          </div>
+        </article>
+
+        <article class="servicio">
+          <div class="servicio-num"><em class="it">iii</em>. — Gobernanza</div>
+          <span class="servicio-tag">Liderazgo PMO</span>
+          <h3>Liderazgo de <em>proyectos críticos</em> bajo PMI / ITIL</h3>
+          <p class="descripcion">
+            Conduzco proyectos donde la falla no es opción: integraciones
+            bancarias, migraciones de canal, transformaciones de Cash Management.
+            Estructura PMI, operación ITIL 4, ritmo Agile cuando aporta.
+          </p>
+          <div class="resultado">
+            Proyectos que llegan a producción sin desviación crítica. Equipos
+            que entienden el negocio, no sólo el ticket.
+          </div>
+          <div class="servicio-stack">
+            <span class="chip">PMI · Clarity</span>
+            <span class="chip">ITIL 4</span>
+            <span class="chip">Agile</span>
+            <span class="chip">RAID logs</span>
+          </div>
+        </article>
+
+        <article class="servicio">
+          <div class="servicio-num"><em class="it">iv</em>. — Inteligencia</div>
+          <span class="servicio-tag">Datos · IA</span>
+          <h3>Detección <em>temprana</em> de anomalías transaccionales</h3>
+          <p class="descripcion">
+            Pipelines en Databricks que ingieren logs y entrenan modelos de
+            detección de anomalías sobre tiempos de respuesta y patrones de
+            error. Reducción medible del MTTD.
+          </p>
+          <div class="resultado">
+            El sistema avisa antes que el cliente. La operación pasa de
+            reactiva a anticipativa.
+          </div>
+          <div class="servicio-stack">
+            <span class="chip">Databricks</span>
+            <span class="chip">Python</span>
+            <span class="chip">MLflow</span>
+            <span class="chip">Kafka</span>
+          </div>
+        </article>
+
+        <article class="servicio">
+          <div class="servicio-num"><em class="it">v</em>. — Integración</div>
+          <span class="servicio-tag">APIs · Pasarelas</span>
+          <h3>Integración <em>bancaria</em> H2H, B2B & APIs ISO 20022</h3>
+          <p class="descripcion">
+            Conexiones cliente-banco con autenticación robusta, rate limiting,
+            validación MT/ISO 20022 y trazas. Aprovecho experiencia previa con
+            Sage XRT y pasarelas WSB de banca empresa.
+          </p>
+          <div class="resultado">
+            Los clientes Wholesale operan sin fricciones; el área TI deja
+            de apagar incendios de integración.
+          </div>
+          <div class="servicio-stack">
+            <span class="chip">.NET / Node</span>
+            <span class="chip">Redis</span>
+            <span class="chip">OAuth 2.0</span>
+            <span class="chip">ISO 20022</span>
+          </div>
+        </article>
+
+        <article class="servicio">
+          <div class="servicio-num"><em class="it">vi</em>. — Mentoría</div>
+          <span class="servicio-tag">Equipos</span>
+          <h3>Formación de <em>equipos</em> de banca crítica</h3>
+          <p class="descripcion">
+            Acompaño a equipos técnicos que deben asumir responsabilidad
+            sobre sistemas que no pueden caerse. Entreno en gestión de
+            incidentes, lectura de flujos transaccionales y cultura de
+            postmortems sin culpabilizar.
+          </p>
+          <div class="resultado">
+            Equipos que pasan de "ejecutar tickets" a entender el sistema —
+            y a defenderlo cuando algo sale mal.
+          </div>
+          <div class="servicio-stack">
+            <span class="chip">Mentoring</span>
+            <span class="chip">Postmortems</span>
+            <span class="chip">Runbooks</span>
+            <span class="chip">SRE-lite</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== TRAYECTORIA =============== -->
+  <section id="trayectoria">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-num">
+          Sección · Trayectoria
+          <span class="roman">IV.</span>
+        </div>
+        <h2 class="section-title">
+          Una línea continua: de NOC a <em>liderar banca crítica.</em>
+        </h2>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="timeline-period">
+            <strong>Hoy</strong>
+            desde 11/2023
+          </div>
+          <div class="timeline-content">
+            <h4>Ingeniero de Software · BCI</h4>
+            <div class="timeline-role">Banca Empresa · Wholesale</div>
+            <p>Lidero proyectos de observabilidad transaccional end-to-end para flujos de pagos críticos. Coordino equipos de Arquitectura, Data Engineers y PMO. Reducción medible de tiempos de detección de incidentes vía diagnóstico tecnológico estructurado.</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-period">
+            <strong>2022 – 2023</strong>
+            12 meses
+          </div>
+          <div class="timeline-content">
+            <h4>Ingeniero Onboarding Empresa · BCI</h4>
+            <div class="timeline-role">Wholesale Banking</div>
+            <p>Integración de soluciones de pago entre el banco y clientes Wholesale. Gestión de soporte en niveles N0–N2 con foco en estabilidad operacional.</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-period">
+            <strong>2021 – 2022</strong>
+            12 meses
+          </div>
+          <div class="timeline-content">
+            <h4>Ingeniero de Experiencia y Servicios TI · BCI</h4>
+            <div class="timeline-role">Servicios Transaccionales</div>
+            <p>Dirección de equipos multidisciplinarios para entrega de valor estratégico. Gestión de incidentes críticos en producción.</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-period">
+            <strong>2018 – 2021</strong>
+            36 meses
+          </div>
+          <div class="timeline-content">
+            <h4>Técnico Cash Management · BCI</h4>
+            <div class="timeline-role">Banca Transaccional</div>
+            <p>Gestión de canales directos H2H/B2B y administración de Sage XRT Business Exchange. Desarrollo en C#, PHP y scripts de automatización.</p>
+          </div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-period">
+            <strong>2013 – 2018</strong>
+            5 años
+          </div>
+          <div class="timeline-content">
+            <h4>Telco · Data Center · NOC</h4>
+            <div class="timeline-role">Fractalia · Telefónica · HPE · Selkis</div>
+            <p>Cinco años en la capa baja: monitoreo MPLS bajo ITIL, arquitectura de Data Center bajo norma ANSI-TIA 942, gestión de infraestructura física y troubleshooting de hardware. La base sobre la que se construye todo lo demás.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== CONTACTO =============== -->
+  <section class="contacto" id="contacto">
+    <div class="wrap contacto-grid">
+      <div>
+        <span class="eyebrow" style="margin-bottom:24px;display:inline-flex;">Conversemos</span>
+        <h2>Para empresas e instituciones donde <em>el sistema no puede caerse.</em></h2>
+        <p class="kicker">
+          Si lideras un equipo de TI bancaria, una tesorería corporativa, una
+          PMO en banca o una iniciativa de transformación digital con
+          requisitos críticos — escríbeme.
+        </p>
+      </div>
+
+      <div class="contacto-card" aria-label="Datos de contacto">
+        <div class="contacto-card-inner">
+          <div class="contacto-row">
+            <span class="key">Email</span>
+            <a class="val" href="#" id="mail-link" rel="noopener">
+              <span id="mail-text">cargando…</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div class="contacto-row">
+            <span class="key">LinkedIn</span>
+            <a class="val" href="https://www.linkedin.com/in/xcarlosmatias/" target="_blank" rel="noopener noreferrer">
+              in/xcarlosmatias <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <div class="contacto-row">
+            <span class="key">GitHub</span>
+            <a class="val" href="https://github.com/xcarlosmatias" target="_blank" rel="noopener noreferrer">
+              @xcarlosmatias <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <div class="contacto-row">
+            <span class="key">Teléfono</span>
+            <a class="val" href="#" id="phone-link" rel="noopener">
+              <span id="phone-text">cargando…</span>
+            </a>
+          </div>
+          <div class="contacto-row">
+            <span class="key">Base</span>
+            <span class="val">Santiago, Chile</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== FOOTER =============== -->
+  <footer>
+    <div class="wrap footer-inner">
+      <div class="signature">
+        Undersoftware<span class="dot">.</span>
+        <span style="font-family:var(--mono); font-style:normal; font-size:11px; color:var(--ink-mute); letter-spacing:0.08em; margin-left:8px;">CL · MMXXVI</span>
+      </div>
+      <div>
+        Construido por Carlos Oliver · Pieza única · Sin AI slop
+      </div>
+    </div>
+  </footer>
+
+  <!-- =============== JS — mínimo, sin dependencias =============== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1) Email & teléfono ofuscados anti-scraping
+      var u = ['carlos', 'undersoftware', 'cl'];
+      var mail = u[0] + '@' + u[1] + '.' + u[2];
+      var phone = '+569' + '7487' + '3037';
+
+      var mailText = document.getElementById('mail-text');
+      var mailLink = document.getElementById('mail-link');
+      if (mailText && mailLink) {
+        mailText.textContent = mail;
+        mailLink.setAttribute('href', 'mailto:' + mail);
+      }
+      var phoneText = document.getElementById('phone-text');
+      var phoneLink = document.getElementById('phone-link');
+      if (phoneText && phoneLink) {
+        phoneText.textContent = phone;
+        phoneLink.setAttribute('href', 'tel:' + phone.replace(/\s/g, ''));
+      }
+
+      // 2) Reveal + animación de barras al entrar al viewport
+      var rows = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              e.target.classList.add('in');
+              var fill = e.target.querySelector('.stack-bar-fill');
+              if (fill) {
+                var w = fill.getAttribute('data-w');
+                fill.style.width = w + '%';
+              }
+              io.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.2, rootMargin: '0px 0px -10% 0px' });
+        rows.forEach(function (r) { io.observe(r); });
+      } else {
+        document.querySelectorAll('.stack-bar-fill').forEach(function (b) {
+          b.style.width = b.getAttribute('data-w') + '%';
+        });
+        rows.forEach(function (r) { r.classList.add('in'); });
+      }
+
+    })();
+  </script>
+</body>
+</html>
