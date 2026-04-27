@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- =========================================================
+       SEGURIDAD · CSP actualizada para permitir:
+       · mindicador.cl (API USD/CLP del Banco Central de Chile)
+       · checkout.stripe.com (redirect de pagos)
+       · open.er-api.com (fallback gratuito de tipo de cambio)
+       ========================================================= -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 base-uri 'self';
+                 form-action 'self' https://checkout.stripe.com;
+                 frame-ancestors 'none';
+                 object-src 'none';
+                 img-src 'self' data: https://api.qrserver.com;
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                 font-src 'self' https://fonts.gstatic.com;
+                 script-src 'self' 'unsafe-inline';
+                 connect-src 'self' https://mindicador.cl https://open.er-api.com;
+                 upgrade-insecure-requests;" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy"
+        content="camera=(), microphone=(), geolocation=(), payment=(self), usb=(), interest-cohort=()" />
+  <meta name="robots" content="index, follow" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#050B1F" />
+
+  <title>Carlos Oliver · Tarjeta Digital — Undersoftware</title>
+  <meta name="description" content="Carlos Oliver Carvajal — Ingeniero de Software & Líder de Proyectos. Tarjeta digital con contacto, servicios y pagos seguros." />
+  <meta name="author" content="Carlos Matías Oliver Carvajal" />
+  <link rel="canonical" href="https://www.undersoftware.cl/" />
+  <meta property="og:type" content="profile" />
+  <meta property="og:title" content="Carlos Oliver · Undersoftware" />
+  <meta property="og:description" content="Ingeniería para sistemas críticos. Banca · Pagos · Observabilidad." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://mindicador.cl" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =====================================================
+       TOKENS · paleta cosmic navy + coral + mint + gold
+       ===================================================== */
+    :root {
+      --bg-0:    #050B1F;
+      --bg-1:    #0A1330;
+      --bg-2:    #0E1A3D;
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-2: rgba(255, 255, 255, 0.07);
+      --border:  rgba(255, 255, 255, 0.10);
+      --border-2:rgba(255, 255, 255, 0.18);
+
+      --ink-0:   #F8FAFC;
+      --ink-1:   #CBD5E1;
+      --ink-2:   #94A3B8;
+      --ink-3:   #64748B;
+
+      --coral:   #FF6B6B;
+      --orange:  #FFB347;
+      --mint:    #4ADE80;
+      --mint-2:  #34D399;
+      --cobalt:  #5B8DEF;
+      --gold:    #F5C572;
+      --rose:    #F472B6;
+      --danger:  #F87171;
+
+      --grad-coral:  linear-gradient(135deg, #FF6B6B 0%, #FFB347 100%);
+      --grad-mint:   linear-gradient(135deg, #4ADE80 0%, #06B6D4 100%);
+      --grad-violet: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
+      --grad-card:   linear-gradient(180deg, rgba(255,107,107,0.08) 0%, rgba(91,141,239,0.04) 50%, transparent 100%);
+
+      --serif: 'Instrument Serif', 'Times New Roman', serif;
+      --sans:  'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      --mono:  'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+      --r-sm: 12px;
+      --r-md: 18px;
+      --r-lg: 28px;
+      --r-xl: 36px;
+      --shadow-glow: 0 0 0 1px rgba(255,107,107,0.18), 0 30px 80px -20px rgba(255,107,107,0.35);
+    }
+
+    /* =====================================================
+       BASE
+       ===================================================== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg-0);
+      color: var(--ink-1);
+      font-family: var(--sans);
+      font-size: 15.5px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    ::selection { background: var(--coral); color: var(--bg-0); }
+
+    /* Atmospheric background — animated aurora */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -10%; left: -10%;
+      width: 70%; height: 70%;
+      background: radial-gradient(circle, rgba(255,107,107,0.18), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(40px);
+      animation: float 18s ease-in-out infinite;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -15%; right: -10%;
+      width: 70%; height: 70%;
+      background: radial-gradient(circle, rgba(91,141,239,0.16), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(50px);
+      animation: float 22s ease-in-out infinite reverse;
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, 30px) scale(1.1); }
+    }
+
+    /* =====================================================
+       LAYOUT — vertical card, mobile-first
+       ===================================================== */
+    .stage {
+      position: relative;
+      z-index: 1;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    @media (min-width: 768px) {
+      .stage { max-width: 580px; padding: 40px 24px 100px; }
+    }
+
+    /* =====================================================
+       CARD HERO
+       ===================================================== */
+    .card-hero {
+      position: relative;
+      background:
+        var(--grad-card),
+        linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 32px 28px 28px;
+      overflow: hidden;
+      box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+    }
+    .card-hero::before {
+      content: "";
+      position: absolute;
+      top: -1px; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--coral), transparent);
+    }
+
+    /* Top row: status + actions */
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: var(--mint);
+      background: rgba(74, 222, 128, 0.10);
+      border: 1px solid rgba(74, 222, 128, 0.25);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+    .status-pill .live-dot {
+      width: 6px; height: 6px;
+      background: var(--mint);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--mint);
+      animation: pulse 1.6s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .top-tools {
+      display: flex;
+      gap: 8px;
+    }
+    .icon-btn {
+      width: 36px; height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--ink-1);
+      transition: all 0.2s;
+    }
+    .icon-btn:hover {
+      background: var(--surface-2);
+      border-color: var(--coral);
+      color: var(--coral);
+      transform: translateY(-1px);
+    }
+    .icon-btn svg { width: 16px; height: 16px; }
+
+    /* Avatar */
+    .avatar-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .avatar {
+      width: 112px; height: 112px;
+      border-radius: 50%;
+      background: var(--grad-coral);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 48px;
+      color: var(--bg-0);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      box-shadow:
+        0 0 0 4px var(--bg-1),
+        0 0 0 5px rgba(255,107,107,0.4),
+        0 20px 40px -10px rgba(255,107,107,0.5);
+      position: relative;
+    }
+    .avatar::after {
+      content: "";
+      position: absolute;
+      bottom: 4px; right: 4px;
+      width: 22px; height: 22px;
+      background: var(--mint);
+      border: 3px solid var(--bg-1);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--mint);
+    }
+
+    /* Identity */
+    .identity { text-align: center; margin-bottom: 28px; }
+    .identity h1 {
+      font-family: var(--serif);
+      font-size: clamp(34px, 8vw, 44px);
+      line-height: 1;
+      color: var(--ink-0);
+      font-weight: 400;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    .identity h1 em {
+      font-style: italic;
+      background: var(--grad-coral);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .identity .role {
+      font-size: 14px;
+      color: var(--ink-2);
+      font-weight: 500;
+    }
+    .identity .role strong {
+      color: var(--ink-0);
+      font-weight: 600;
+    }
+    .identity .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding: 5px 12px;
+      background: rgba(245, 197, 114, 0.08);
+      border: 1px solid rgba(245, 197, 114, 0.25);
+      border-radius: 999px;
+    }
+
+    /* Quick action grid */
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 28px;
+    }
+    .action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 14px 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      color: var(--ink-1);
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.25s;
+      text-align: center;
+    }
+    .action:hover {
+      background: var(--surface-2);
+      border-color: var(--border-2);
+      transform: translateY(-3px);
+      color: var(--ink-0);
+    }
+    .action .ico {
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: var(--grad-coral);
+      color: var(--bg-0);
+    }
+    .action.alt .ico { background: var(--grad-mint); }
+    .action.alt2 .ico { background: var(--grad-violet); }
+    .action.alt3 .ico { background: linear-gradient(135deg, var(--gold) 0%, #FF9500 100%); color: var(--bg-0); }
+    .action .ico svg { width: 18px; height: 18px; }
+
+    /* Primary CTA — save contact */
+    .primary-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 16px;
+      padding: 16px 20px;
+      background: var(--grad-coral);
+      color: var(--bg-0);
+      border-radius: var(--r-md);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+      box-shadow: 0 10px 30px -10px rgba(255,107,107,0.5);
+    }
+    .primary-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px -10px rgba(255,107,107,0.7);
+    }
+    .primary-cta svg { width: 18px; height: 18px; }
+
+    /* =====================================================
+       SECTION CARDS
+       ===================================================== */
+    .section {
+      margin-top: 24px;
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 14px;
+    }
+    .section-eyebrow .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--coral);
+    }
+    .section h2 {
+      font-family: var(--serif);
+      font-size: clamp(26px, 6vw, 32px);
+      line-height: 1.1;
+      color: var(--ink-0);
+      font-weight: 400;
+      margin: 0 0 14px;
+      letter-spacing: -0.015em;
+    }
+    .section h2 em {
+      font-style: italic;
+      background: var(--grad-coral);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .section h2 .mint-em {
+      font-style: italic;
+      color: var(--mint);
+    }
+    .section p {
+      color: var(--ink-1);
+      font-size: 15px;
+      line-height: 1.65;
+      margin: 0 0 14px;
+    }
+    .section p:last-child { margin-bottom: 0; }
+
+    /* =====================================================
+       LIVE FX CHART
+       ===================================================== */
+    .fx-card {
+      background:
+        radial-gradient(800px 200px at 50% 0%, rgba(74,222,128,0.08), transparent 60%),
+        var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 24px 22px;
+      margin-top: 24px;
+      overflow: hidden;
+    }
+    .fx-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .fx-head .left .label {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .fx-head .left .pair {
+      font-family: var(--serif);
+      font-size: 22px;
+      color: var(--ink-0);
+      letter-spacing: -0.01em;
+    }
+    .fx-head .left .source {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--ink-3);
+      margin-top: 4px;
+    }
+    .fx-head .right { text-align: right; }
+    .fx-value {
+      font-family: var(--mono);
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--ink-0);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .fx-value .currency {
+      font-size: 14px;
+      color: var(--ink-3);
+      font-weight: 500;
+      margin-right: 4px;
+    }
+    .fx-change {
+      font-family: var(--mono);
+      font-size: 13px;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+    .fx-change.up { color: var(--mint); }
+    .fx-change.down { color: var(--danger); }
+    .fx-change .arrow { font-size: 10px; vertical-align: middle; margin-right: 2px; }
+
+    .fx-chart {
+      width: 100%;
+      height: 180px;
+      margin: 8px 0 6px;
+      position: relative;
+    }
+    .fx-chart svg { width: 100%; height: 100%; display: block; }
+    .fx-chart .skeleton {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .fx-chart .skeleton .ld {
+      width: 6px; height: 6px;
+      background: var(--mint);
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: pulse 1s infinite;
+    }
+
+    .fx-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+    }
+    .fx-foot .updated {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .fx-foot .updated .live-dot {
+      width: 5px; height: 5px;
+      background: var(--mint);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--mint);
+      animation: pulse 2s infinite;
+    }
+    .fx-foot .points {
+      color: var(--ink-2);
+    }
+
+    .fx-mini {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .fx-mini .item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--ink-2);
+    }
+    .fx-mini .item .k {
+      color: var(--ink-3);
+      font-size: 9.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .fx-mini .item .v { color: var(--ink-0); font-weight: 600; }
+
+    /* =====================================================
+       SERVICES
+       ===================================================== */
+    .services {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .service {
+      display: flex;
+      gap: 14px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      transition: all 0.25s;
+    }
+    .service:hover {
+      background: var(--surface-2);
+      border-color: var(--border-2);
+    }
+    .service .ico-box {
+      width: 44px; height: 44px;
+      flex: 0 0 44px;
+      border-radius: 12px;
+      background: var(--grad-coral);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--bg-0);
+    }
+    .service:nth-child(2) .ico-box { background: var(--grad-mint); }
+    .service:nth-child(3) .ico-box { background: var(--grad-violet); }
+    .service .ico-box svg { width: 22px; height: 22px; }
+    .service .body { flex: 1; min-width: 0; }
+    .service .title {
+      font-weight: 700;
+      color: var(--ink-0);
+      font-size: 14.5px;
+      margin-bottom: 4px;
+    }
+    .service .desc {
+      font-size: 13px;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    /* =====================================================
+       PAYMENT
+       ===================================================== */
+    .pay-card {
+      background:
+        radial-gradient(600px 200px at 100% 0%, rgba(255,107,107,0.10), transparent 60%),
+        var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px 24px;
+      margin-top: 24px;
+    }
+    .plans {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0 18px;
+    }
+    .plan {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .plan:hover {
+      background: var(--surface-2);
+      border-color: var(--border-2);
+    }
+    .plan input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .plan.is-selected {
+      border-color: var(--coral);
+      background: rgba(255, 107, 107, 0.06);
+      box-shadow: 0 0 0 1px var(--coral);
+    }
+    .plan .left { display: flex; gap: 12px; align-items: center; flex: 1; }
+    .plan .check {
+      width: 22px; height: 22px;
+      border: 2px solid var(--border-2);
+      border-radius: 50%;
+      flex: 0 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .plan.is-selected .check {
+      border-color: var(--coral);
+      background: var(--coral);
+    }
+    .plan.is-selected .check::after {
+      content: "✓";
+      color: var(--bg-0);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .plan .info .name {
+      color: var(--ink-0);
+      font-weight: 700;
+      font-size: 14.5px;
+    }
+    .plan .info .meta {
+      font-size: 12px;
+      color: var(--ink-2);
+      margin-top: 2px;
+    }
+    .plan .price {
+      font-family: var(--mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink-0);
+      white-space: nowrap;
+    }
+    .plan .price .clp { color: var(--ink-3); font-size: 11px; font-weight: 500; }
+
+    .pay-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 18px 20px;
+      background: var(--ink-0);
+      color: var(--bg-0);
+      border-radius: var(--r-md);
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.3s;
+      letter-spacing: -0.01em;
+    }
+    .pay-button:hover:not(:disabled) {
+      background: var(--mint);
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px -10px rgba(74, 222, 128, 0.5);
+    }
+    .pay-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .pay-button .lock { width: 16px; height: 16px; }
+    .pay-button .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(0,0,0,0.2);
+      border-top-color: var(--bg-0);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+    .pay-button.is-loading .spinner { display: block; }
+    .pay-button.is-loading .lock,
+    .pay-button.is-loading .label { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .trust {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+    .trust span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .trust .ic {
+      color: var(--mint);
+      font-size: 12px;
+    }
+
+    .pay-error {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: rgba(248, 113, 113, 0.10);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-radius: 10px;
+      color: var(--danger);
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .pay-error.is-visible { display: block; }
+
+    /* =====================================================
+       FOOTER + QR
+       ===================================================== */
+    .qr-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-top: 24px;
+      padding: 18px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+    }
+    .qr-img {
+      width: 84px; height: 84px;
+      border-radius: 12px;
+      background: white;
+      padding: 6px;
+      flex: 0 0 84px;
+    }
+    .qr-text { flex: 1; min-width: 0; }
+    .qr-text .t { color: var(--ink-0); font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .qr-text .d { font-size: 12px; color: var(--ink-2); line-height: 1.5; }
+
+    footer {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+    }
+    footer .heart { color: var(--coral); }
+    footer .signal { color: var(--mint); }
+
+    /* Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2,0.8,0.3,1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="stage">
+
+    <!-- ===================== CARD HERO ===================== -->
+    <section class="card-hero">
+      <div class="top-row">
+        <div class="status-pill">
+          <span class="live-dot"></span>
+          <span>Disponible para conversar</span>
+        </div>
+        <div class="top-tools">
+          <button class="icon-btn" id="btn-share" aria-label="Compartir tarjeta" title="Compartir">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+          </button>
+          <button class="icon-btn" id="btn-copy" aria-label="Copiar enlace" title="Copiar enlace">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="avatar-wrap">
+        <div class="avatar" aria-label="Avatar Carlos Oliver">CO</div>
+      </div>
+
+      <div class="identity">
+        <h1>Carlos <em>Oliver</em></h1>
+        <div class="role"><strong>Ingeniero de Software</strong> · Líder de Proyectos TI</div>
+        <div class="badge">
+          <span>★</span>
+          <span>Banca · Pagos · Observabilidad</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a class="action" id="act-call" href="#" aria-label="Llamar">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+          <span>Llamar</span>
+        </a>
+        <a class="action alt" id="act-mail" href="#" aria-label="Enviar email">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+          <span>Email</span>
+        </a>
+        <a class="action alt2" href="https://www.linkedin.com/in/xcarlosmatias/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3v9zM6.5 8.25A1.75 1.75 0 1 1 8.3 6.5a1.78 1.78 0 0 1-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg></span>
+          <span>LinkedIn</span>
+        </a>
+        <a class="action alt3" href="https://github.com/xcarlosmatias" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.4.5 0 5.9 0 12.5c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2.9-.3 2-.4 3-.4s2 .1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.7.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6C20.6 22.3 24 17.8 24 12.5 24 5.9 18.6.5 12 .5z"/></svg></span>
+          <span>GitHub</span>
+        </a>
+      </div>
+
+      <button class="primary-cta" id="btn-vcard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Guardar contacto en mi teléfono</span>
+      </button>
+    </section>
+
+    <!-- ===================== ABOUT ===================== -->
+    <section class="section reveal">
+      <div class="section-eyebrow">
+        <span class="dot"></span>
+        <span>Sobre Carlos</span>
+      </div>
+      <h2>Aporto <em>valor</em> donde el error <span class="mint-em">no es opción</span>.</h2>
+      <p>
+        Casi ocho años diseñando, liderando y operando la maquinaria invisible que sostiene los pagos críticos
+        de la banca chilena. Mi trabajo vive en la intersección entre <strong style="color:var(--ink-0)">ingeniería,
+        gestión y operación</strong>: ese punto donde un sistema sostiene un negocio en lugar de ponerlo en riesgo.
+      </p>
+      <p>
+        No vendo horas, aporto criterio. El que se entrena escalando de NOC en redes MPLS a líder de proyectos
+        de observabilidad transaccional en uno de los bancos más grandes de Chile.
+      </p>
+    </section>
+
+    <!-- ===================== LIVE FX CHART ===================== -->
+    <section class="fx-card reveal" id="fx" aria-label="Cotización USD/CLP en vivo">
+      <div class="fx-head">
+        <div class="left">
+          <div class="label">USD / CLP · Tiempo real</div>
+          <div class="pair">Dólar Observado</div>
+          <div class="source">Fuente: Banco Central · vía mindicador.cl</div>
+        </div>
+        <div class="right">
+          <div class="fx-value"><span class="currency">$</span><span id="fx-current">—</span></div>
+          <div class="fx-change" id="fx-change">cargando…</div>
+        </div>
+      </div>
+
+      <div class="fx-chart" id="fx-chart">
+        <div class="skeleton"><span class="ld"></span> Cargando datos…</div>
+      </div>
+
+      <div class="fx-mini">
+        <div class="item"><div class="k">Mín 30d</div><div class="v" id="fx-min">—</div></div>
+        <div class="item"><div class="k">Máx 30d</div><div class="v" id="fx-max">—</div></div>
+        <div class="item"><div class="k">Promedio</div><div class="v" id="fx-avg">—</div></div>
+      </div>
+
+      <div class="fx-foot">
+        <div class="updated">
+          <span class="live-dot"></span>
+          <span id="fx-updated">Conectando…</span>
+        </div>
+        <div class="points" id="fx-points">— puntos</div>
+      </div>
+    </section>
+
+    <!-- ===================== SERVICES ===================== -->
+    <section class="section reveal">
+      <div class="section-eyebrow">
+        <span class="dot"></span>
+        <span>Servicios</span>
+      </div>
+      <h2>Tres formas de <em>trabajar</em> juntos.</h2>
+
+      <div class="services">
+        <div class="service">
+          <div class="ico-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
+          </div>
+          <div class="body">
+            <div class="title">Consultoría puntual</div>
+            <div class="desc">Diagnóstico técnico, segunda opinión sobre arquitectura, análisis de incidentes. Sesión 1 a 1.</div>
+          </div>
+        </div>
+        <div class="service">
+          <div class="ico-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>
+          </div>
+          <div class="body">
+            <div class="title">Liderazgo de proyecto</div>
+            <div class="desc">Dirección end-to-end de un proyecto crítico bajo PMI/ITIL/Agile. Compromiso por entregable.</div>
+          </div>
+        </div>
+        <div class="service">
+          <div class="ico-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="body">
+            <div class="title">Implementación observabilidad</div>
+            <div class="desc">Diseño e implementación de monitoreo transaccional end-to-end. Específico para banca/pagos.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PAYMENT ===================== -->
+    <section class="pay-card reveal" id="pay">
+      <div class="section-eyebrow">
+        <span class="dot"></span>
+        <span>Pago seguro</span>
+      </div>
+      <h2>Reserva una <em>sesión</em> ahora.</h2>
+      <p style="margin-bottom: 4px; font-size: 14px;">
+        El pago se procesa en el checkout de Stripe — tu tarjeta nunca toca este sitio.
+      </p>
+
+      <form class="plans" id="plans-form" novalidate>
+        <label class="plan is-selected" data-amount="80000" data-name="Sesión Diagnóstico">
+          <input type="radio" name="plan" value="diagnostico" checked />
+          <div class="left">
+            <span class="check"></span>
+            <div class="info">
+              <div class="name">Sesión Diagnóstico · 60 min</div>
+              <div class="meta">Análisis técnico de un caso puntual</div>
+            </div>
+          </div>
+          <div class="price">$80.000 <span class="clp">CLP</span></div>
+        </label>
+        <label class="plan" data-amount="220000" data-name="Pack Mensoría 3 sesiones">
+          <input type="radio" name="plan" value="pack3" />
+          <div class="left">
+            <span class="check"></span>
+            <div class="info">
+              <div class="name">Pack Mentoría · 3 sesiones</div>
+              <div class="meta">Acompañamiento mensual a líder técnico</div>
+            </div>
+          </div>
+          <div class="price">$220.000 <span class="clp">CLP</span></div>
+        </label>
+        <label class="plan" data-amount="450000" data-name="Auditoría Arquitectura">
+          <input type="radio" name="plan" value="auditoria" />
+          <div class="left">
+            <span class="check"></span>
+            <div class="info">
+              <div class="name">Auditoría de Arquitectura</div>
+              <div class="meta">Informe escrito + sesión de presentación</div>
+            </div>
+          </div>
+          <div class="price">$450.000 <span class="clp">CLP</span></div>
+        </label>
+      </form>
+
+      <button class="pay-button" id="btn-pay" type="button">
+        <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span class="label">Pagar de forma segura</span>
+        <span class="spinner"></span>
+      </button>
+
+      <div class="pay-error" id="pay-error"></div>
+
+      <div class="trust">
+        <span><span class="ic">●</span> SSL 256-bit</span>
+        <span><span class="ic">●</span> PCI-DSS L1</span>
+        <span><span class="ic">●</span> Stripe Checkout</span>
+      </div>
+    </section>
+
+    <!-- ===================== QR ROW ===================== -->
+    <section class="qr-row reveal">
+      <img class="qr-img" id="qr-img" alt="Código QR para compartir esta tarjeta" />
+      <div class="qr-text">
+        <div class="t">Compártelo en persona</div>
+        <div class="d">Escanea este código para abrir mi tarjeta digital en cualquier teléfono.</div>
+      </div>
+    </section>
+
+    <footer>
+      © 2026 · undersoftware.cl · Construido con <span class="heart">●</span> en Santiago<br>
+      <span class="signal">●</span> Sitio cifrado · CSP estricta · Sin trackers
+    </footer>
+  </main>
+
+  <!-- ===================== SCRIPT ===================== -->
+  <script>
+  (function () {
+    'use strict';
+
+    // ===================================================
+    // 1) DATOS DE CONTACTO (ofuscados anti-scraping)
+    // ===================================================
+    var u = ['carlos', 'undersoftware', 'cl'];
+    var EMAIL = u[0] + '@' + u[1] + '.' + u[2];
+    var PHONE = '+56974873037';
+    var SITE  = 'https://www.undersoftware.cl/';
+    var FULLNAME = 'Carlos Matías Oliver Carvajal';
+
+    document.getElementById('act-call').setAttribute('href', 'tel:' + PHONE);
+    document.getElementById('act-mail').setAttribute('href', 'mailto:' + EMAIL);
+
+    // ===================================================
+    // 2) GUARDAR CONTACTO (vCard 3.0)
+    // ===================================================
+    document.getElementById('btn-vcard').addEventListener('click', function () {
+      var vcf = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        'N:Oliver Carvajal;Carlos;Matías;;',
+        'FN:' + FULLNAME,
+        'ORG:Undersoftware',
+        'TITLE:Ingeniero de Software / Líder de Proyectos TI',
+        'TEL;TYPE=CELL,VOICE:' + PHONE,
+        'EMAIL;TYPE=INTERNET,PREF:' + EMAIL,
+        'URL:' + SITE,
+        'ADR;TYPE=WORK:;;Santiago;Región Metropolitana;;;Chile',
+        'NOTE:Banca · Pagos · Observabilidad transaccional',
+        'END:VCARD'
+      ].join('\r\n');
+
+      var blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Carlos_Oliver.vcf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    });
+
+    // ===================================================
+    // 3) COMPARTIR · Web Share API + fallback
+    // ===================================================
+    var shareData = {
+      title: 'Carlos Oliver · Undersoftware',
+      text: 'Ingeniería para sistemas críticos · Banca · Pagos · Observabilidad',
+      url: SITE
+    };
+    document.getElementById('btn-share').addEventListener('click', async function () {
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch (_) {}
+      } else {
+        copyLink();
+      }
+    });
+    function copyLink () {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(SITE).then(function () {
+          flashBtn(document.getElementById('btn-copy'), '✓');
+        });
+      }
+    }
+    document.getElementById('btn-copy').addEventListener('click', copyLink);
+    function flashBtn (el, txt) {
+      var orig = el.innerHTML;
+      el.innerHTML = '<span style="font-size:14px;font-weight:700;color:var(--mint)">' + txt + '</span>';
+      setTimeout(function () { el.innerHTML = orig; }, 1400);
+    }
+
+    // ===================================================
+    // 4) QR — generado vía endpoint público (no requiere lib)
+    //    Usa api.qrserver.com (whitelisted en CSP img-src)
+    // ===================================================
+    var qrImg = document.getElementById('qr-img');
+    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?data='
+      + encodeURIComponent(SITE)
+      + '&size=200x200&margin=8&color=050B1F&bgcolor=FFFFFF&format=svg';
+    qrImg.src = qrUrl;
+
+    // ===================================================
+    // 5) GRÁFICO USD/CLP EN TIEMPO REAL
+    //    Fuente primaria: mindicador.cl (Banco Central de Chile)
+    //    Fallback:        open.er-api.com
+    //    Render:          SVG inline, sin dependencias
+    //    Refresh:         cada 5 minutos (la cotización oficial es diaria)
+    // ===================================================
+    var FX = {
+      el: {
+        chart: document.getElementById('fx-chart'),
+        current: document.getElementById('fx-current'),
+        change: document.getElementById('fx-change'),
+        updated: document.getElementById('fx-updated'),
+        points: document.getElementById('fx-points'),
+        min: document.getElementById('fx-min'),
+        max: document.getElementById('fx-max'),
+        avg: document.getElementById('fx-avg')
+      },
+      data: []
+    };
+
+    function fmtCLP (n) {
+      return n.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function fmtTime (d) {
+      return d.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    async function fetchDolar () {
+      try {
+        // Fuente oficial: mindicador.cl (últimos ~30 valores diarios)
+        var resp = await fetch('https://mindicador.cl/api/dolar', { cache: 'no-store' });
+        if (!resp.ok) throw new Error('mindicador HTTP ' + resp.status);
+        var json = await resp.json();
+        if (!json.serie || !json.serie.length) throw new Error('serie vacía');
+
+        // Reverso: la serie viene del más reciente al más antiguo
+        var serie = json.serie.slice().reverse().map(function (p) {
+          return { fecha: new Date(p.fecha), valor: Number(p.valor) };
+        });
+        renderFx(serie, 'Banco Central · mindicador.cl');
+      } catch (err) {
+        // Fallback: open.er-api.com (sólo valor actual; armamos serie de 1 punto)
+        try {
+          var r2 = await fetch('https://open.er-api.com/v6/latest/USD');
+          var j2 = await r2.json();
+          var v = j2 && j2.rates && j2.rates.CLP;
+          if (!v) throw new Error('sin rate');
+          renderFx([{ fecha: new Date(), valor: Number(v) }], 'Fallback · open.er-api.com');
+        } catch (e2) {
+          FX.el.chart.innerHTML = '<div class="skeleton" style="color:var(--danger)">Sin conexión a la fuente</div>';
+          FX.el.updated.textContent = 'Reintentando…';
+        }
+      }
+    }
+
+    function renderFx (serie, source) {
+      FX.data = serie;
+      var last = serie[serie.length - 1];
+      var prev = serie.length > 1 ? serie[serie.length - 2] : last;
+      var diff = last.valor - prev.valor;
+      var pct = (diff / prev.valor) * 100;
+
+      FX.el.current.textContent = fmtCLP(last.valor);
+
+      var arrow = diff >= 0 ? '▲' : '▼';
+      FX.el.change.className = 'fx-change ' + (diff >= 0 ? 'up' : 'down');
+      FX.el.change.innerHTML = '<span class="arrow">' + arrow + '</span> '
+        + (diff >= 0 ? '+' : '') + fmtCLP(diff) + ' (' + (diff >= 0 ? '+' : '') + pct.toFixed(2) + '%)';
+
+      var values = serie.map(function (p) { return p.valor; });
+      var minV = Math.min.apply(null, values);
+      var maxV = Math.max.apply(null, values);
+      var avgV = values.reduce(function (a, b) { return a + b; }, 0) / values.length;
+
+      FX.el.min.textContent = '$' + fmtCLP(minV);
+      FX.el.max.textContent = '$' + fmtCLP(maxV);
+      FX.el.avg.textContent = '$' + fmtCLP(avgV);
+      FX.el.points.textContent = serie.length + ' puntos';
+      FX.el.updated.textContent = 'Actualizado ' + fmtTime(new Date()) + ' · ' + source;
+
+      drawChart(serie, minV, maxV);
+    }
+
+    // SVG line chart construido a mano — sin dependencias, CSP-safe
+    function drawChart (serie, minV, maxV) {
+      var chartEl = FX.el.chart;
+      var W = chartEl.clientWidth || 480;
+      var H = chartEl.clientHeight || 180;
+      var pad = { t: 8, r: 8, b: 24, l: 8 };
+      var iw = W - pad.l - pad.r;
+      var ih = H - pad.t - pad.b;
+
+      // Pequeño padding vertical para que no toque los bordes
+      var range = maxV - minV || 1;
+      var yMin = minV - range * 0.08;
+      var yMax = maxV + range * 0.08;
+
+      function x (i) { return pad.l + (serie.length === 1 ? iw / 2 : (i / (serie.length - 1)) * iw); }
+      function y (v) { return pad.t + ih - ((v - yMin) / (yMax - yMin)) * ih; }
+
+      // Path línea + path área
+      var linePts = [], areaPts = [];
+      for (var i = 0; i < serie.length; i++) {
+        linePts.push((i === 0 ? 'M' : 'L') + x(i).toFixed(1) + ' ' + y(serie[i].valor).toFixed(1));
+      }
+      var lineD = linePts.join(' ');
+      var areaD = lineD + ' L' + x(serie.length - 1).toFixed(1) + ' ' + (pad.t + ih) +
+                  ' L' + x(0).toFixed(1) + ' ' + (pad.t + ih) + ' Z';
+
+      // Grid horizontal (3 líneas)
+      var gridY = '';
+      for (var g = 0; g < 3; g++) {
+        var gy = (pad.t + (ih / 2) * g).toFixed(1);
+        gridY += '<line x1="' + pad.l + '" x2="' + (W - pad.r) + '" y1="' + gy + '" y2="' + gy + '" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>';
+      }
+
+      // Etiquetas de fecha (3: inicio, medio, fin)
+      var lbls = '';
+      function dateLbl (d) {
+        return d.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
+      }
+      if (serie.length > 1) {
+        lbls += '<text x="' + x(0) + '" y="' + (H - 4) + '" fill="rgba(255,255,255,0.4)" font-size="9.5" font-family="JetBrains Mono, monospace">' + dateLbl(serie[0].fecha) + '</text>';
+        var midI = Math.floor(serie.length / 2);
+        lbls += '<text x="' + x(midI) + '" y="' + (H - 4) + '" fill="rgba(255,255,255,0.4)" font-size="9.5" font-family="JetBrains Mono, monospace" text-anchor="middle">' + dateLbl(serie[midI].fecha) + '</text>';
+        lbls += '<text x="' + x(serie.length - 1) + '" y="' + (H - 4) + '" fill="rgba(255,255,255,0.4)" font-size="9.5" font-family="JetBrains Mono, monospace" text-anchor="end">hoy</text>';
+      }
+
+      // Punto final destacado
+      var lastX = x(serie.length - 1).toFixed(1);
+      var lastY = y(serie[serie.length - 1].valor).toFixed(1);
+
+      var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' +
+        '<defs>' +
+          '<linearGradient id="fxGrad" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0%" stop-color="#4ADE80" stop-opacity="0.35"/>' +
+            '<stop offset="100%" stop-color="#4ADE80" stop-opacity="0"/>' +
+          '</linearGradient>' +
+          '<linearGradient id="fxLine" x1="0" y1="0" x2="1" y2="0">' +
+            '<stop offset="0%" stop-color="#06B6D4"/>' +
+            '<stop offset="100%" stop-color="#4ADE80"/>' +
+          '</linearGradient>' +
+        '</defs>' +
+        gridY +
+        '<path d="' + areaD + '" fill="url(#fxGrad)" />' +
+        '<path d="' + lineD + '" fill="none" stroke="url(#fxLine)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' +
+        '<circle cx="' + lastX + '" cy="' + lastY + '" r="4" fill="#4ADE80"/>' +
+        '<circle cx="' + lastX + '" cy="' + lastY + '" r="8" fill="#4ADE80" opacity="0.25"><animate attributeName="r" values="4;14;4" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite"/></circle>' +
+        lbls +
+        '</svg>';
+
+      chartEl.innerHTML = svg;
+    }
+
+    // Primer fetch + refresh cada 5 minutos
+    fetchDolar();
+    setInterval(fetchDolar, 5 * 60 * 1000);
+    // Re-render del chart cuando cambie el tamaño
+    var resizeT;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(function () {
+        if (FX.data.length) {
+          var vs = FX.data.map(function (p) { return p.valor; });
+          drawChart(FX.data, Math.min.apply(null, vs), Math.max.apply(null, vs));
+        }
+      }, 200);
+    });
+
+    // ===================================================
+    // 6) PAGOS · selección de plan + checkout seguro
+    //    El frontend NO toca tarjetas — sólo llama al backend
+    //    /api/create-checkout-session que crea la sesión Stripe
+    //    y devuelve la URL de checkout para redirección.
+    // ===================================================
+    var plans = document.querySelectorAll('.plan');
+    plans.forEach(function (p) {
+      p.addEventListener('click', function () {
+        plans.forEach(function (x) { x.classList.remove('is-selected'); });
+        p.classList.add('is-selected');
+        p.querySelector('input[type=radio]').checked = true;
+      });
+    });
+
+    var btnPay = document.getElementById('btn-pay');
+    var payErr = document.getElementById('pay-error');
+
+    btnPay.addEventListener('click', async function () {
+      payErr.classList.remove('is-visible');
+      payErr.textContent = '';
+
+      var selected = document.querySelector('.plan.is-selected');
+      if (!selected) {
+        return showPayError('Selecciona un plan primero.');
+      }
+
+      var amount = Number(selected.dataset.amount);
+      var name = selected.dataset.name;
+      if (!amount || amount < 1000) {
+        return showPayError('Plan inválido.');
+      }
+
+      btnPay.classList.add('is-loading');
+      btnPay.disabled = true;
+
+      try {
+        var resp = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            amount: amount,           // en CLP, entero
+            currency: 'clp',
+            description: name,
+            plan: selected.querySelector('input').value
+          })
+        });
+
+        if (!resp.ok) {
+          var msg = 'Error ' + resp.status;
+          try { var je = await resp.json(); if (je && je.error) msg = je.error; } catch (_) {}
+          throw new Error(msg);
+        }
+
+        var data = await resp.json();
+        if (!data.url) throw new Error('Respuesta inválida del servidor');
+
+        // Redirige al checkout hosted de Stripe (URL https confiable)
+        if (data.url.indexOf('https://checkout.stripe.com/') === 0 ||
+            data.url.indexOf('https://billing.stripe.com/') === 0) {
+          window.location.href = data.url;
+        } else {
+          throw new Error('URL de checkout no confiable');
+        }
+      } catch (err) {
+        showPayError('No se pudo iniciar el pago: ' + (err.message || 'error desconocido') +
+          '. Si el problema persiste, escríbeme a ' + EMAIL + '.');
+        btnPay.classList.remove('is-loading');
+        btnPay.disabled = false;
+      }
+    });
+
+    function showPayError (msg) {
+      payErr.textContent = msg;
+      payErr.classList.add('is-visible');
+    }
+
+    // ===================================================
+    // 7) Reveal on scroll
+    // ===================================================
+    var els = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
+      els.forEach(function (el) { io.observe(el); });
+    } else {
+      els.forEach(function (el) { el.classList.add('in'); });
+    }
+
+  })();
+  </script>
+</body>
+</html>
