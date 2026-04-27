@@ -6,10 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
   <!-- =========================================================
-       SEGURIDAD · CSP actualizada para permitir:
-       · mindicador.cl (API USD/CLP del Banco Central de Chile)
-       · checkout.stripe.com (redirect de pagos)
-       · open.er-api.com (fallback gratuito de tipo de cambio)
+       SEGURIDAD · CSP — fuentes externas explícitamente listadas:
+       · mindicador.cl       → USD/CLP (Banco Central de Chile)
+       · open.er-api.com     → fallback FX
+       · api.coingecko.com   → cripto en CLP
+       · hn.algolia.com      → noticias de tecnología/IA (Hacker News)
+       · checkout.stripe.com → redirect de pagos
+       · api.qrserver.com    → generador de QR
        ========================================================= -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
@@ -17,11 +20,11 @@
                  form-action 'self' https://checkout.stripe.com;
                  frame-ancestors 'none';
                  object-src 'none';
-                 img-src 'self' data: https://api.qrserver.com;
+                 img-src 'self' data: https://api.qrserver.com https://assets.coingecko.com https://coin-images.coingecko.com;
                  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
                  font-src 'self' https://fonts.gstatic.com;
                  script-src 'self' 'unsafe-inline';
-                 connect-src 'self' https://mindicador.cl https://open.er-api.com;
+                 connect-src 'self' https://mindicador.cl https://open.er-api.com https://api.coingecko.com https://hn.algolia.com;
                  upgrade-insecure-requests;" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
@@ -32,7 +35,7 @@
   <meta name="theme-color" content="#050B1F" />
 
   <title>Carlos Oliver · Tarjeta Digital — Undersoftware</title>
-  <meta name="description" content="Carlos Oliver Carvajal — Ingeniero de Software & Líder de Proyectos. Tarjeta digital con contacto, servicios y pagos seguros." />
+  <meta name="description" content="Carlos Oliver Carvajal — Ingeniero de Software & Líder de Proyectos. Tarjeta digital con portafolio de integraciones en vivo y pagos seguros." />
   <meta name="author" content="Carlos Matías Oliver Carvajal" />
   <link rel="canonical" href="https://www.undersoftware.cl/" />
   <meta property="og:type" content="profile" />
@@ -42,12 +45,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://mindicador.cl" />
+  <link rel="preconnect" href="https://api.coingecko.com" />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <style>
-    /* =====================================================
-       TOKENS · paleta cosmic navy + coral + mint + gold
-       ===================================================== */
+    /* ==========================================================
+       TOKENS
+       ========================================================== */
     :root {
       --bg-0:    #050B1F;
       --bg-1:    #0A1330;
@@ -69,11 +73,13 @@
       --cobalt:  #5B8DEF;
       --gold:    #F5C572;
       --rose:    #F472B6;
+      --violet:  #A855F7;
       --danger:  #F87171;
 
       --grad-coral:  linear-gradient(135deg, #FF6B6B 0%, #FFB347 100%);
       --grad-mint:   linear-gradient(135deg, #4ADE80 0%, #06B6D4 100%);
       --grad-violet: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
+      --grad-gold:   linear-gradient(135deg, #F5C572 0%, #FF9500 100%);
       --grad-card:   linear-gradient(180deg, rgba(255,107,107,0.08) 0%, rgba(91,141,239,0.04) 50%, transparent 100%);
 
       --serif: 'Instrument Serif', 'Times New Roman', serif;
@@ -84,12 +90,11 @@
       --r-md: 18px;
       --r-lg: 28px;
       --r-xl: 36px;
-      --shadow-glow: 0 0 0 1px rgba(255,107,107,0.18), 0 30px 80px -20px rgba(255,107,107,0.35);
     }
 
-    /* =====================================================
+    /* ==========================================================
        BASE
-       ===================================================== */
+       ========================================================== */
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body {
@@ -109,7 +114,6 @@
     img { max-width: 100%; display: block; }
     ::selection { background: var(--coral); color: var(--bg-0); }
 
-    /* Atmospheric background — animated aurora */
     body::before {
       content: "";
       position: fixed;
@@ -136,10 +140,15 @@
       0%, 100% { transform: translate(0, 0) scale(1); }
       50% { transform: translate(40px, 30px) scale(1.1); }
     }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* =====================================================
-       LAYOUT — vertical card, mobile-first
-       ===================================================== */
+    /* ==========================================================
+       LAYOUT
+       ========================================================== */
     .stage {
       position: relative;
       z-index: 1;
@@ -147,14 +156,13 @@
       margin: 0 auto;
       padding: 24px 20px 80px;
     }
-
     @media (min-width: 768px) {
       .stage { max-width: 580px; padding: 40px 24px 100px; }
     }
 
-    /* =====================================================
+    /* ==========================================================
        CARD HERO
-       ===================================================== */
+       ========================================================== */
     .card-hero {
       position: relative;
       background:
@@ -162,7 +170,7 @@
         linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
       border: 1px solid var(--border);
       border-radius: var(--r-xl);
-      padding: 32px 28px 28px;
+      padding: 28px 24px 24px;
       overflow: hidden;
       box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
     }
@@ -174,12 +182,11 @@
       background: linear-gradient(90deg, transparent, var(--coral), transparent);
     }
 
-    /* Top row: status + actions */
     .top-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
     .status-pill {
       display: inline-flex;
@@ -201,10 +208,6 @@
       box-shadow: 0 0 12px var(--mint);
       animation: pulse 1.6s infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
     .top-tools {
       display: flex;
       gap: 8px;
@@ -219,6 +222,7 @@
       border-radius: 50%;
       color: var(--ink-1);
       transition: all 0.2s;
+      position: relative;
     }
     .icon-btn:hover {
       background: var(--surface-2);
@@ -227,22 +231,39 @@
       transform: translateY(-1px);
     }
     .icon-btn svg { width: 16px; height: 16px; }
+    .icon-btn .tip {
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-0);
+      color: var(--ink-1);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      border: 1px solid var(--border);
+    }
+    .icon-btn:hover .tip { opacity: 1; }
 
-    /* Avatar */
     .avatar-wrap {
       display: flex;
       justify-content: center;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
     .avatar {
-      width: 112px; height: 112px;
+      width: 108px; height: 108px;
       border-radius: 50%;
       background: var(--grad-coral);
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: var(--serif);
-      font-size: 48px;
+      font-size: 46px;
       color: var(--bg-0);
       font-weight: 500;
       letter-spacing: -0.02em;
@@ -263,11 +284,10 @@
       box-shadow: 0 0 10px var(--mint);
     }
 
-    /* Identity */
-    .identity { text-align: center; margin-bottom: 28px; }
+    .identity { text-align: center; margin-bottom: 24px; }
     .identity h1 {
       font-family: var(--serif);
-      font-size: clamp(34px, 8vw, 44px);
+      font-size: clamp(32px, 7.5vw, 42px);
       line-height: 1;
       color: var(--ink-0);
       font-weight: 400;
@@ -286,10 +306,7 @@
       color: var(--ink-2);
       font-weight: 500;
     }
-    .identity .role strong {
-      color: var(--ink-0);
-      font-weight: 600;
-    }
+    .identity .role strong { color: var(--ink-0); font-weight: 600; }
     .identity .badge {
       display: inline-flex;
       align-items: center;
@@ -306,12 +323,11 @@
       border-radius: 999px;
     }
 
-    /* Quick action grid */
     .actions {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      margin-top: 28px;
+      margin-bottom: 18px;
     }
     .action {
       display: flex;
@@ -344,38 +360,76 @@
       background: var(--grad-coral);
       color: var(--bg-0);
     }
-    .action.alt .ico { background: var(--grad-mint); }
+    .action.alt .ico  { background: var(--grad-mint); }
     .action.alt2 .ico { background: var(--grad-violet); }
-    .action.alt3 .ico { background: linear-gradient(135deg, var(--gold) 0%, #FF9500 100%); color: var(--bg-0); }
+    .action.alt3 .ico { background: var(--grad-gold); color: var(--bg-0); }
     .action .ico svg { width: 18px; height: 18px; }
 
-    /* Primary CTA — save contact */
-    .primary-cta {
+    /* === SECTION CHIPS — reemplaza el botón naranja === */
+    .chips-label {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 10px;
-      width: 100%;
-      margin-top: 16px;
-      padding: 16px 20px;
-      background: var(--grad-coral);
-      color: var(--bg-0);
-      border-radius: var(--r-md);
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: -0.01em;
-      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
-      box-shadow: 0 10px 30px -10px rgba(255,107,107,0.5);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-top: 8px;
+      margin-bottom: 12px;
     }
-    .primary-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 40px -10px rgba(255,107,107,0.7);
+    .chips-label .line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
     }
-    .primary-cta svg { width: 18px; height: 18px; }
+    .section-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 2px 2px 6px;
+      margin: 0 -4px;
+    }
+    .section-chips::-webkit-scrollbar { display: none; }
+    .section-chip {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink-1);
+      white-space: nowrap;
+      transition: all 0.25s;
+    }
+    .section-chip:hover {
+      background: var(--surface-2);
+      border-color: var(--coral);
+      color: var(--ink-0);
+      transform: translateY(-1px);
+    }
+    .section-chip .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 0 0 8px var(--coral);
+    }
+    .section-chip.is-mint .dot   { background: var(--mint); box-shadow: 0 0 8px var(--mint); }
+    .section-chip.is-violet .dot { background: var(--violet); box-shadow: 0 0 8px var(--violet); }
+    .section-chip.is-gold .dot   { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+    .section-chip .arr { font-family: var(--serif); font-style: italic; opacity: 0.6; }
 
-    /* =====================================================
-       SECTION CARDS
-       ===================================================== */
+    /* ==========================================================
+       SECCIÓN GENÉRICA
+       ========================================================== */
     .section {
       margin-top: 24px;
       background: var(--bg-1);
@@ -400,6 +454,11 @@
       width: 5px; height: 5px;
       border-radius: 50%;
       background: var(--coral);
+    }
+    .section-eyebrow.live .dot {
+      background: var(--mint);
+      box-shadow: 0 0 10px var(--mint);
+      animation: pulse 1.6s infinite;
     }
     .section h2 {
       font-family: var(--serif);
@@ -429,78 +488,149 @@
     }
     .section p:last-child { margin-bottom: 0; }
 
-    /* =====================================================
-       LIVE FX CHART
-       ===================================================== */
-    .fx-card {
-      background:
-        radial-gradient(800px 200px at 50% 0%, rgba(74,222,128,0.08), transparent 60%),
-        var(--bg-1);
+    /* ==========================================================
+       PORTAFOLIO — header + cards
+       ========================================================== */
+    .portfolio-head {
+      margin-top: 24px;
+      padding: 28px 24px 12px;
+    }
+    .portfolio-head h2 {
+      font-family: var(--serif);
+      font-size: clamp(28px, 6.5vw, 36px);
+      line-height: 1.05;
+      color: var(--ink-0);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin: 0 0 12px;
+    }
+    .portfolio-head h2 em {
+      font-style: italic;
+      background: var(--grad-mint);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .portfolio-head p {
+      color: var(--ink-2);
+      font-size: 14.5px;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .portfolio-head p strong {
+      color: var(--ink-0);
+      font-weight: 600;
+    }
+    .portfolio-stack {
+      display: grid;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    /* === Card base de integración === */
+    .integ {
+      background: var(--bg-1);
       border: 1px solid var(--border);
       border-radius: var(--r-lg);
-      padding: 24px 22px;
-      margin-top: 24px;
+      padding: 22px 22px 18px;
+      position: relative;
       overflow: hidden;
     }
-    .fx-head {
+    .integ-head {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin-bottom: 18px;
+      gap: 16px;
     }
-    .fx-head .left .label {
+    .integ-head .left { min-width: 0; }
+    .integ-head .left .label {
       font-family: var(--mono);
-      font-size: 10.5px;
+      font-size: 10px;
       letter-spacing: 0.12em;
       color: var(--ink-3);
       text-transform: uppercase;
       margin-bottom: 4px;
     }
-    .fx-head .left .pair {
+    .integ-head .left .pair {
       font-family: var(--serif);
       font-size: 22px;
       color: var(--ink-0);
       letter-spacing: -0.01em;
+      line-height: 1.1;
     }
-    .fx-head .left .source {
+    .integ-head .left .source {
       font-family: var(--mono);
       font-size: 10px;
       color: var(--ink-3);
       margin-top: 4px;
     }
-    .fx-head .right { text-align: right; }
+    .integ-head .right { text-align: right; flex-shrink: 0; }
+
+    .integ-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+    }
+    .integ-foot .updated {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .integ-foot .live-dot {
+      width: 5px; height: 5px;
+      background: var(--mint);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--mint);
+      animation: pulse 2s infinite;
+    }
+    .integ-foot .points { color: var(--ink-2); }
+
+    /* === FX (USD/CLP) === */
+    .integ-fx {
+      background:
+        radial-gradient(700px 200px at 50% 0%, rgba(74,222,128,0.08), transparent 60%),
+        var(--bg-1);
+    }
     .fx-value {
       font-family: var(--mono);
-      font-size: 32px;
+      font-size: 30px;
       font-weight: 600;
       color: var(--ink-0);
       letter-spacing: -0.02em;
       line-height: 1;
     }
     .fx-value .currency {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--ink-3);
       font-weight: 500;
       margin-right: 4px;
     }
     .fx-change {
       font-family: var(--mono);
-      font-size: 13px;
+      font-size: 12.5px;
       margin-top: 6px;
       font-weight: 600;
     }
-    .fx-change.up { color: var(--mint); }
+    .fx-change.up   { color: var(--mint); }
     .fx-change.down { color: var(--danger); }
     .fx-change .arrow { font-size: 10px; vertical-align: middle; margin-right: 2px; }
 
     .fx-chart {
       width: 100%;
-      height: 180px;
-      margin: 8px 0 6px;
+      height: 160px;
+      margin: 4px 0 6px;
       position: relative;
     }
     .fx-chart svg { width: 100%; height: 100%; display: block; }
-    .fx-chart .skeleton {
+    .skeleton {
       position: absolute;
       inset: 0;
       display: flex;
@@ -512,7 +642,7 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
-    .fx-chart .skeleton .ld {
+    .skeleton .ld {
       width: 6px; height: 6px;
       background: var(--mint);
       border-radius: 50%;
@@ -520,38 +650,11 @@
       animation: pulse 1s infinite;
     }
 
-    .fx-foot {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      font-family: var(--mono);
-      font-size: 10.5px;
-      color: var(--ink-3);
-      letter-spacing: 0.04em;
-    }
-    .fx-foot .updated {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .fx-foot .updated .live-dot {
-      width: 5px; height: 5px;
-      background: var(--mint);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--mint);
-      animation: pulse 2s infinite;
-    }
-    .fx-foot .points {
-      color: var(--ink-2);
-    }
-
     .fx-mini {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      margin-top: 14px;
+      margin-top: 12px;
     }
     .fx-mini .item {
       background: var(--surface);
@@ -571,9 +674,154 @@
     }
     .fx-mini .item .v { color: var(--ink-0); font-weight: 600; }
 
-    /* =====================================================
+    /* === CRIPTO === */
+    .integ-crypto {
+      background:
+        radial-gradient(700px 200px at 50% 0%, rgba(245,197,114,0.08), transparent 60%),
+        var(--bg-1);
+    }
+    .crypto-list {
+      display: grid;
+      gap: 10px;
+    }
+    .crypto-row {
+      display: grid;
+      grid-template-columns: 32px 1fr 90px 80px;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      transition: all 0.2s;
+    }
+    .crypto-row:hover {
+      background: var(--surface-2);
+      border-color: var(--border-2);
+    }
+    .crypto-icon {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--bg-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--gold);
+      border: 1px solid var(--border);
+    }
+    .crypto-icon.btc { background: linear-gradient(135deg, #F7931A, #ffb44a); color: #1a1a1a; border-color: transparent; }
+    .crypto-icon.eth { background: linear-gradient(135deg, #627EEA, #8aa3ff); color: white; border-color: transparent; }
+    .crypto-icon.usdt { background: linear-gradient(135deg, #26A17B, #50d4a4); color: white; border-color: transparent; }
+    .crypto-name { min-width: 0; }
+    .crypto-name .n {
+      color: var(--ink-0);
+      font-weight: 700;
+      font-size: 13.5px;
+    }
+    .crypto-name .s {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .crypto-price {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--ink-0);
+      font-weight: 600;
+      text-align: right;
+    }
+    .crypto-price .clp {
+      font-size: 9.5px;
+      color: var(--ink-3);
+      font-weight: 500;
+      margin-left: 3px;
+    }
+    .crypto-change {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      text-align: right;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .crypto-change.up   { color: var(--mint);  background: rgba(74,222,128,0.10); }
+    .crypto-change.down { color: var(--danger); background: rgba(248,113,113,0.10); }
+    .crypto-skel {
+      height: 56px;
+      background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--r-md);
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* === NEWS === */
+    .integ-news {
+      background:
+        radial-gradient(700px 200px at 50% 0%, rgba(168,85,247,0.10), transparent 60%),
+        var(--bg-1);
+    }
+    .news-list {
+      display: grid;
+      gap: 10px;
+    }
+    .news-item {
+      display: block;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      transition: all 0.25s;
+    }
+    .news-item:hover {
+      background: var(--surface-2);
+      border-color: var(--violet);
+      transform: translateY(-1px);
+    }
+    .news-item .title {
+      color: var(--ink-0);
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .news-item:hover .title { color: var(--mint-2); }
+    .news-item .meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--ink-3);
+    }
+    .news-item .meta .pts { color: var(--gold); }
+    .news-item .meta .arr {
+      margin-left: auto;
+      color: var(--violet);
+      font-family: var(--serif);
+      font-style: italic;
+    }
+    .news-skel {
+      height: 60px;
+      background: linear-gradient(90deg, var(--surface) 0%, var(--surface-2) 50%, var(--surface) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--r-md);
+    }
+
+    /* ==========================================================
        SERVICES
-       ===================================================== */
+       ========================================================== */
     .services {
       display: grid;
       gap: 12px;
@@ -606,21 +854,12 @@
     .service:nth-child(3) .ico-box { background: var(--grad-violet); }
     .service .ico-box svg { width: 22px; height: 22px; }
     .service .body { flex: 1; min-width: 0; }
-    .service .title {
-      font-weight: 700;
-      color: var(--ink-0);
-      font-size: 14.5px;
-      margin-bottom: 4px;
-    }
-    .service .desc {
-      font-size: 13px;
-      color: var(--ink-2);
-      line-height: 1.5;
-    }
+    .service .title { font-weight: 700; color: var(--ink-0); font-size: 14.5px; margin-bottom: 4px; }
+    .service .desc { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
 
-    /* =====================================================
+    /* ==========================================================
        PAYMENT
-       ===================================================== */
+       ========================================================== */
     .pay-card {
       background:
         radial-gradient(600px 200px at 100% 0%, rgba(255,107,107,0.10), transparent 60%),
@@ -630,11 +869,7 @@
       padding: 28px 24px;
       margin-top: 24px;
     }
-    .plans {
-      display: grid;
-      gap: 10px;
-      margin: 18px 0 18px;
-    }
+    .plans { display: grid; gap: 10px; margin: 18px 0; }
     .plan {
       display: flex;
       justify-content: space-between;
@@ -648,10 +883,7 @@
       transition: all 0.2s;
       position: relative;
     }
-    .plan:hover {
-      background: var(--surface-2);
-      border-color: var(--border-2);
-    }
+    .plan:hover { background: var(--surface-2); border-color: var(--border-2); }
     .plan input[type="radio"] {
       position: absolute;
       opacity: 0;
@@ -662,7 +894,7 @@
       background: rgba(255, 107, 107, 0.06);
       box-shadow: 0 0 0 1px var(--coral);
     }
-    .plan .left { display: flex; gap: 12px; align-items: center; flex: 1; }
+    .plan .left { display: flex; gap: 12px; align-items: center; flex: 1; min-width: 0; }
     .plan .check {
       width: 22px; height: 22px;
       border: 2px solid var(--border-2);
@@ -673,29 +905,18 @@
       justify-content: center;
       transition: all 0.2s;
     }
-    .plan.is-selected .check {
-      border-color: var(--coral);
-      background: var(--coral);
-    }
+    .plan.is-selected .check { border-color: var(--coral); background: var(--coral); }
     .plan.is-selected .check::after {
       content: "✓";
       color: var(--bg-0);
       font-size: 12px;
       font-weight: 700;
     }
-    .plan .info .name {
-      color: var(--ink-0);
-      font-weight: 700;
-      font-size: 14.5px;
-    }
-    .plan .info .meta {
-      font-size: 12px;
-      color: var(--ink-2);
-      margin-top: 2px;
-    }
+    .plan .info .name { color: var(--ink-0); font-weight: 700; font-size: 14px; }
+    .plan .info .meta { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
     .plan .price {
       font-family: var(--mono);
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--ink-0);
       white-space: nowrap;
@@ -722,10 +943,7 @@
       transform: translateY(-2px);
       box-shadow: 0 18px 40px -10px rgba(74, 222, 128, 0.5);
     }
-    .pay-button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+    .pay-button:disabled { opacity: 0.6; cursor: not-allowed; }
     .pay-button .lock { width: 16px; height: 16px; }
     .pay-button .spinner {
       width: 16px; height: 16px;
@@ -738,7 +956,6 @@
     .pay-button.is-loading .spinner { display: block; }
     .pay-button.is-loading .lock,
     .pay-button.is-loading .label { display: none; }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
     .trust {
       display: flex;
@@ -750,17 +967,9 @@
       font-size: 10.5px;
       color: var(--ink-3);
       letter-spacing: 0.04em;
-      text-align: center;
     }
-    .trust span {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .trust .ic {
-      color: var(--mint);
-      font-size: 12px;
-    }
+    .trust span { display: inline-flex; align-items: center; gap: 6px; }
+    .trust .ic { color: var(--mint); font-size: 12px; }
 
     .pay-error {
       display: none;
@@ -775,9 +984,9 @@
     }
     .pay-error.is-visible { display: block; }
 
-    /* =====================================================
-       FOOTER + QR
-       ===================================================== */
+    /* ==========================================================
+       QR + FOOTER
+       ========================================================== */
     .qr-row {
       display: flex;
       gap: 16px;
@@ -799,20 +1008,35 @@
     .qr-text .t { color: var(--ink-0); font-weight: 700; font-size: 14px; margin-bottom: 4px; }
     .qr-text .d { font-size: 12px; color: var(--ink-2); line-height: 1.5; }
 
-    footer {
-      text-align: center;
-      margin-top: 32px;
+    /* === FOOTER reescrito con divs sólidos (no <br>) === */
+    .site-footer {
+      margin-top: 36px;
       padding-top: 24px;
       border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      text-align: center;
       font-family: var(--mono);
       font-size: 10.5px;
       color: var(--ink-3);
       letter-spacing: 0.04em;
     }
-    footer .heart { color: var(--coral); }
-    footer .signal { color: var(--mint); }
+    .footer-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-line .heart  { color: var(--coral); font-size: 9px; }
+    .footer-line .signal { color: var(--mint);  font-size: 9px; }
+    .footer-line .sep    { color: var(--ink-3); opacity: 0.5; }
 
-    /* Reveal */
+    /* ==========================================================
+       UTILS
+       ========================================================== */
     .reveal {
       opacity: 0;
       transform: translateY(16px);
@@ -841,11 +1065,17 @@
           <span>Disponible para conversar</span>
         </div>
         <div class="top-tools">
+          <button class="icon-btn" id="btn-vcard" aria-label="Guardar contacto" title="Guardar contacto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span class="tip">Guardar .vcf</span>
+          </button>
           <button class="icon-btn" id="btn-share" aria-label="Compartir tarjeta" title="Compartir">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>
+            <span class="tip">Compartir</span>
           </button>
           <button class="icon-btn" id="btn-copy" aria-label="Copiar enlace" title="Copiar enlace">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span class="tip">Copiar enlace</span>
           </button>
         </div>
       </div>
@@ -882,18 +1112,39 @@
         </a>
       </div>
 
-      <button class="primary-cta" id="btn-vcard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Guardar contacto en mi teléfono</span>
-      </button>
+      <!-- === Section navigation chips (reemplaza el botón naranja) === -->
+      <div class="chips-label">
+        <span class="line"></span>
+        <span>Explorar</span>
+        <span class="line"></span>
+      </div>
+      <nav class="section-chips" aria-label="Secciones">
+        <a class="section-chip is-mint" href="#portafolio">
+          <span class="dot"></span>
+          <span>Portafolio en vivo</span>
+          <span class="arr">→</span>
+        </a>
+        <a class="section-chip" href="#servicios">
+          <span class="dot"></span>
+          <span>Servicios</span>
+          <span class="arr">→</span>
+        </a>
+        <a class="section-chip is-violet" href="#pagos">
+          <span class="dot"></span>
+          <span>Pagar sesión</span>
+          <span class="arr">→</span>
+        </a>
+        <a class="section-chip is-gold" href="#sobre">
+          <span class="dot"></span>
+          <span>Sobre mí</span>
+          <span class="arr">→</span>
+        </a>
+      </nav>
     </section>
 
-    <!-- ===================== ABOUT ===================== -->
-    <section class="section reveal">
-      <div class="section-eyebrow">
-        <span class="dot"></span>
-        <span>Sobre Carlos</span>
-      </div>
+    <!-- ===================== SOBRE ===================== -->
+    <section class="section reveal" id="sobre">
+      <div class="section-eyebrow"><span class="dot"></span><span>Sobre Carlos</span></div>
       <h2>Aporto <em>valor</em> donde el error <span class="mint-em">no es opción</span>.</h2>
       <p>
         Casi ocho años diseñando, liderando y operando la maquinaria invisible que sostiene los pagos críticos
@@ -906,45 +1157,99 @@
       </p>
     </section>
 
-    <!-- ===================== LIVE FX CHART ===================== -->
-    <section class="fx-card reveal" id="fx" aria-label="Cotización USD/CLP en vivo">
-      <div class="fx-head">
-        <div class="left">
-          <div class="label">USD / CLP · Tiempo real</div>
-          <div class="pair">Dólar Observado</div>
-          <div class="source">Fuente: Banco Central · vía mindicador.cl</div>
-        </div>
-        <div class="right">
-          <div class="fx-value"><span class="currency">$</span><span id="fx-current">—</span></div>
-          <div class="fx-change" id="fx-change">cargando…</div>
-        </div>
-      </div>
-
-      <div class="fx-chart" id="fx-chart">
-        <div class="skeleton"><span class="ld"></span> Cargando datos…</div>
-      </div>
-
-      <div class="fx-mini">
-        <div class="item"><div class="k">Mín 30d</div><div class="v" id="fx-min">—</div></div>
-        <div class="item"><div class="k">Máx 30d</div><div class="v" id="fx-max">—</div></div>
-        <div class="item"><div class="k">Promedio</div><div class="v" id="fx-avg">—</div></div>
-      </div>
-
-      <div class="fx-foot">
-        <div class="updated">
-          <span class="live-dot"></span>
-          <span id="fx-updated">Conectando…</span>
-        </div>
-        <div class="points" id="fx-points">— puntos</div>
-      </div>
+    <!-- ===================== PORTAFOLIO EN VIVO ===================== -->
+    <section class="portfolio-head reveal" id="portafolio" aria-label="Portafolio">
+      <div class="section-eyebrow live"><span class="dot"></span><span>Integraciones en vivo · Demo técnico</span></div>
+      <h2>Lo que <em>puedo construir</em>, en vivo desde tu pantalla.</h2>
+      <p>
+        Tres APIs distintas, tres dominios distintos — <strong>moneda local, cripto y noticias</strong> —
+        consumidas y renderizadas en este mismo sitio en tiempo real. Mismo músculo que aplico en clientes
+        de banca y fintech, en chico.
+      </p>
     </section>
 
-    <!-- ===================== SERVICES ===================== -->
-    <section class="section reveal">
-      <div class="section-eyebrow">
-        <span class="dot"></span>
-        <span>Servicios</span>
+    <div class="portfolio-stack">
+
+      <!-- === Card 1: USD/CLP === -->
+      <div class="integ integ-fx reveal" id="fx" aria-label="USD CLP en tiempo real">
+        <div class="integ-head">
+          <div class="left">
+            <div class="label">USD / CLP · Banco Central</div>
+            <div class="pair">Dólar Observado</div>
+            <div class="source">API: mindicador.cl</div>
+          </div>
+          <div class="right">
+            <div class="fx-value"><span class="currency">$</span><span id="fx-current">—</span></div>
+            <div class="fx-change" id="fx-change">cargando…</div>
+          </div>
+        </div>
+
+        <div class="fx-chart" id="fx-chart">
+          <div class="skeleton"><span class="ld"></span> Cargando datos…</div>
+        </div>
+
+        <div class="fx-mini">
+          <div class="item"><div class="k">Mín 30d</div><div class="v" id="fx-min">—</div></div>
+          <div class="item"><div class="k">Máx 30d</div><div class="v" id="fx-max">—</div></div>
+          <div class="item"><div class="k">Promedio</div><div class="v" id="fx-avg">—</div></div>
+        </div>
+
+        <div class="integ-foot">
+          <div class="updated"><span class="live-dot"></span><span id="fx-updated">Conectando…</span></div>
+          <div class="points" id="fx-points">— puntos</div>
+        </div>
       </div>
+
+      <!-- === Card 2: Cripto === -->
+      <div class="integ integ-crypto reveal" id="crypto" aria-label="Cripto en CLP">
+        <div class="integ-head">
+          <div class="left">
+            <div class="label">Cripto · Pesos chilenos</div>
+            <div class="pair">Mercado en CLP</div>
+            <div class="source">API: api.coingecko.com</div>
+          </div>
+        </div>
+
+        <div class="crypto-list" id="crypto-list">
+          <div class="crypto-skel"></div>
+          <div class="crypto-skel"></div>
+          <div class="crypto-skel"></div>
+        </div>
+
+        <div class="integ-foot">
+          <div class="updated"><span class="live-dot"></span><span id="crypto-updated">Conectando…</span></div>
+          <div class="points">3 activos</div>
+        </div>
+      </div>
+
+      <!-- === Card 3: News === -->
+      <div class="integ integ-news reveal" id="news" aria-label="Pulso tech e IA">
+        <div class="integ-head">
+          <div class="left">
+            <div class="label">Pulso · Tech &amp; IA</div>
+            <div class="pair">Lo que se discute hoy</div>
+            <div class="source">API: hn.algolia.com (Hacker News)</div>
+          </div>
+        </div>
+
+        <div class="news-list" id="news-list">
+          <div class="news-skel"></div>
+          <div class="news-skel"></div>
+          <div class="news-skel"></div>
+          <div class="news-skel"></div>
+        </div>
+
+        <div class="integ-foot">
+          <div class="updated"><span class="live-dot"></span><span id="news-updated">Conectando…</span></div>
+          <div class="points">Top 4</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===================== SERVICIOS ===================== -->
+    <section class="section reveal" id="servicios">
+      <div class="section-eyebrow"><span class="dot"></span><span>Servicios</span></div>
       <h2>Tres formas de <em>trabajar</em> juntos.</h2>
 
       <div class="services">
@@ -978,12 +1283,9 @@
       </div>
     </section>
 
-    <!-- ===================== PAYMENT ===================== -->
-    <section class="pay-card reveal" id="pay">
-      <div class="section-eyebrow">
-        <span class="dot"></span>
-        <span>Pago seguro</span>
-      </div>
+    <!-- ===================== PAGO SEGURO ===================== -->
+    <section class="pay-card reveal" id="pagos">
+      <div class="section-eyebrow"><span class="dot"></span><span>Pago seguro</span></div>
       <h2>Reserva una <em>sesión</em> ahora.</h2>
       <p style="margin-bottom: 4px; font-size: 14px;">
         El pago se procesa en el checkout de Stripe — tu tarjeta nunca toca este sitio.
@@ -1001,7 +1303,7 @@
           </div>
           <div class="price">$80.000 <span class="clp">CLP</span></div>
         </label>
-        <label class="plan" data-amount="220000" data-name="Pack Mensoría 3 sesiones">
+        <label class="plan" data-amount="220000" data-name="Pack Mentoría 3 sesiones">
           <input type="radio" name="plan" value="pack3" />
           <div class="left">
             <span class="check"></span>
@@ -1040,7 +1342,7 @@
       </div>
     </section>
 
-    <!-- ===================== QR ROW ===================== -->
+    <!-- ===================== QR ===================== -->
     <section class="qr-row reveal">
       <img class="qr-img" id="qr-img" alt="Código QR para compartir esta tarjeta" />
       <div class="qr-text">
@@ -1049,9 +1351,23 @@
       </div>
     </section>
 
-    <footer>
-      © 2026 · undersoftware.cl · Construido con <span class="heart">●</span> en Santiago<br>
-      <span class="signal">●</span> Sitio cifrado · CSP estricta · Sin trackers
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="site-footer">
+      <div class="footer-line">
+        <span>© 2026</span>
+        <span class="sep">·</span>
+        <span>undersoftware.cl</span>
+        <span class="sep">·</span>
+        <span>Carlos M. Oliver Carvajal</span>
+      </div>
+      <div class="footer-line">
+        <span class="heart">●</span>
+        <span>Construido con criterio en Santiago de Chile</span>
+      </div>
+      <div class="footer-line">
+        <span class="signal">●</span>
+        <span>Sitio cifrado · CSP estricta · Sin trackers</span>
+      </div>
     </footer>
   </main>
 
@@ -1061,7 +1377,7 @@
     'use strict';
 
     // ===================================================
-    // 1) DATOS DE CONTACTO (ofuscados anti-scraping)
+    // Datos de contacto (ofuscados)
     // ===================================================
     var u = ['carlos', 'undersoftware', 'cl'];
     var EMAIL = u[0] + '@' + u[1] + '.' + u[2];
@@ -1073,7 +1389,7 @@
     document.getElementById('act-mail').setAttribute('href', 'mailto:' + EMAIL);
 
     // ===================================================
-    // 2) GUARDAR CONTACTO (vCard 3.0)
+    // vCard download (ahora desde el icon-btn)
     // ===================================================
     document.getElementById('btn-vcard').addEventListener('click', function () {
       var vcf = [
@@ -1090,7 +1406,6 @@
         'NOTE:Banca · Pagos · Observabilidad transaccional',
         'END:VCARD'
       ].join('\r\n');
-
       var blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
@@ -1103,7 +1418,7 @@
     });
 
     // ===================================================
-    // 3) COMPARTIR · Web Share API + fallback
+    // Compartir + Copiar
     // ===================================================
     var shareData = {
       title: 'Carlos Oliver · Undersoftware',
@@ -1113,9 +1428,7 @@
     document.getElementById('btn-share').addEventListener('click', async function () {
       if (navigator.share) {
         try { await navigator.share(shareData); } catch (_) {}
-      } else {
-        copyLink();
-      }
+      } else { copyLink(); }
     });
     function copyLink () {
       if (navigator.clipboard) {
@@ -1132,58 +1445,69 @@
     }
 
     // ===================================================
-    // 4) QR — generado vía endpoint público (no requiere lib)
-    //    Usa api.qrserver.com (whitelisted en CSP img-src)
+    // QR
     // ===================================================
-    var qrImg = document.getElementById('qr-img');
-    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?data='
-      + encodeURIComponent(SITE)
-      + '&size=200x200&margin=8&color=050B1F&bgcolor=FFFFFF&format=svg';
-    qrImg.src = qrUrl;
+    document.getElementById('qr-img').src =
+      'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(SITE) +
+      '&size=200x200&margin=8&color=050B1F&bgcolor=FFFFFF&format=svg';
 
     // ===================================================
-    // 5) GRÁFICO USD/CLP EN TIEMPO REAL
-    //    Fuente primaria: mindicador.cl (Banco Central de Chile)
-    //    Fallback:        open.er-api.com
-    //    Render:          SVG inline, sin dependencias
-    //    Refresh:         cada 5 minutos (la cotización oficial es diaria)
+    // Helpers de formato
     // ===================================================
-    var FX = {
-      el: {
-        chart: document.getElementById('fx-chart'),
-        current: document.getElementById('fx-current'),
-        change: document.getElementById('fx-change'),
-        updated: document.getElementById('fx-updated'),
-        points: document.getElementById('fx-points'),
-        min: document.getElementById('fx-min'),
-        max: document.getElementById('fx-max'),
-        avg: document.getElementById('fx-avg')
-      },
-      data: []
-    };
-
     function fmtCLP (n) {
       return n.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function fmtCLPint (n) {
+      return Math.round(n).toLocaleString('es-CL');
     }
     function fmtTime (d) {
       return d.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
     }
+    function timeAgo (date) {
+      var s = Math.floor((Date.now() - date.getTime()) / 1000);
+      if (s < 60) return 'hace ' + s + 's';
+      if (s < 3600) return 'hace ' + Math.floor(s/60) + 'm';
+      if (s < 86400) return 'hace ' + Math.floor(s/3600) + 'h';
+      return 'hace ' + Math.floor(s/86400) + 'd';
+    }
+    function escHTML (s) {
+      return String(s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+    function safeUrl (url) {
+      try {
+        var u = new URL(url);
+        return (u.protocol === 'https:' || u.protocol === 'http:') ? u.href : '#';
+      } catch (_) { return '#'; }
+    }
+
+    // ===================================================
+    // INTEGRACIÓN 1 · USD/CLP (Banco Central via mindicador.cl)
+    // ===================================================
+    var FX_EL = {
+      chart: document.getElementById('fx-chart'),
+      current: document.getElementById('fx-current'),
+      change: document.getElementById('fx-change'),
+      updated: document.getElementById('fx-updated'),
+      points: document.getElementById('fx-points'),
+      min: document.getElementById('fx-min'),
+      max: document.getElementById('fx-max'),
+      avg: document.getElementById('fx-avg')
+    };
+    var FX_DATA = [];
 
     async function fetchDolar () {
       try {
-        // Fuente oficial: mindicador.cl (últimos ~30 valores diarios)
-        var resp = await fetch('https://mindicador.cl/api/dolar', { cache: 'no-store' });
-        if (!resp.ok) throw new Error('mindicador HTTP ' + resp.status);
-        var json = await resp.json();
-        if (!json.serie || !json.serie.length) throw new Error('serie vacía');
-
-        // Reverso: la serie viene del más reciente al más antiguo
-        var serie = json.serie.slice().reverse().map(function (p) {
+        var r = await fetch('https://mindicador.cl/api/dolar', { cache: 'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        var j = await r.json();
+        if (!j.serie || !j.serie.length) throw new Error('serie vacía');
+        var serie = j.serie.slice().reverse().map(function (p) {
           return { fecha: new Date(p.fecha), valor: Number(p.valor) };
         });
         renderFx(serie, 'Banco Central · mindicador.cl');
       } catch (err) {
-        // Fallback: open.er-api.com (sólo valor actual; armamos serie de 1 punto)
         try {
           var r2 = await fetch('https://open.er-api.com/v6/latest/USD');
           var j2 = await r2.json();
@@ -1191,24 +1515,23 @@
           if (!v) throw new Error('sin rate');
           renderFx([{ fecha: new Date(), valor: Number(v) }], 'Fallback · open.er-api.com');
         } catch (e2) {
-          FX.el.chart.innerHTML = '<div class="skeleton" style="color:var(--danger)">Sin conexión a la fuente</div>';
-          FX.el.updated.textContent = 'Reintentando…';
+          FX_EL.chart.innerHTML = '<div class="skeleton" style="color:var(--danger)">Sin conexión a la fuente</div>';
+          FX_EL.updated.textContent = 'Reintentando…';
         }
       }
     }
 
     function renderFx (serie, source) {
-      FX.data = serie;
+      FX_DATA = serie;
       var last = serie[serie.length - 1];
       var prev = serie.length > 1 ? serie[serie.length - 2] : last;
       var diff = last.valor - prev.valor;
-      var pct = (diff / prev.valor) * 100;
+      var pct = prev.valor ? (diff / prev.valor) * 100 : 0;
 
-      FX.el.current.textContent = fmtCLP(last.valor);
-
+      FX_EL.current.textContent = fmtCLP(last.valor);
       var arrow = diff >= 0 ? '▲' : '▼';
-      FX.el.change.className = 'fx-change ' + (diff >= 0 ? 'up' : 'down');
-      FX.el.change.innerHTML = '<span class="arrow">' + arrow + '</span> '
+      FX_EL.change.className = 'fx-change ' + (diff >= 0 ? 'up' : 'down');
+      FX_EL.change.innerHTML = '<span class="arrow">' + arrow + '</span> '
         + (diff >= 0 ? '+' : '') + fmtCLP(diff) + ' (' + (diff >= 0 ? '+' : '') + pct.toFixed(2) + '%)';
 
       var values = serie.map(function (p) { return p.valor; });
@@ -1216,106 +1539,178 @@
       var maxV = Math.max.apply(null, values);
       var avgV = values.reduce(function (a, b) { return a + b; }, 0) / values.length;
 
-      FX.el.min.textContent = '$' + fmtCLP(minV);
-      FX.el.max.textContent = '$' + fmtCLP(maxV);
-      FX.el.avg.textContent = '$' + fmtCLP(avgV);
-      FX.el.points.textContent = serie.length + ' puntos';
-      FX.el.updated.textContent = 'Actualizado ' + fmtTime(new Date()) + ' · ' + source;
+      FX_EL.min.textContent = '$' + fmtCLP(minV);
+      FX_EL.max.textContent = '$' + fmtCLP(maxV);
+      FX_EL.avg.textContent = '$' + fmtCLP(avgV);
+      FX_EL.points.textContent = serie.length + ' puntos';
+      FX_EL.updated.textContent = 'Actualizado ' + fmtTime(new Date()) + ' · ' + source;
 
-      drawChart(serie, minV, maxV);
+      drawFxChart(serie, minV, maxV);
     }
 
-    // SVG line chart construido a mano — sin dependencias, CSP-safe
-    function drawChart (serie, minV, maxV) {
-      var chartEl = FX.el.chart;
-      var W = chartEl.clientWidth || 480;
-      var H = chartEl.clientHeight || 180;
+    function drawFxChart (serie, minV, maxV) {
+      var el = FX_EL.chart;
+      var W = el.clientWidth || 480;
+      var H = el.clientHeight || 160;
       var pad = { t: 8, r: 8, b: 24, l: 8 };
       var iw = W - pad.l - pad.r;
       var ih = H - pad.t - pad.b;
-
-      // Pequeño padding vertical para que no toque los bordes
       var range = maxV - minV || 1;
       var yMin = minV - range * 0.08;
       var yMax = maxV + range * 0.08;
-
       function x (i) { return pad.l + (serie.length === 1 ? iw / 2 : (i / (serie.length - 1)) * iw); }
       function y (v) { return pad.t + ih - ((v - yMin) / (yMax - yMin)) * ih; }
 
-      // Path línea + path área
-      var linePts = [], areaPts = [];
+      var line = '';
       for (var i = 0; i < serie.length; i++) {
-        linePts.push((i === 0 ? 'M' : 'L') + x(i).toFixed(1) + ' ' + y(serie[i].valor).toFixed(1));
+        line += (i === 0 ? 'M' : 'L') + x(i).toFixed(1) + ' ' + y(serie[i].valor).toFixed(1) + ' ';
       }
-      var lineD = linePts.join(' ');
-      var areaD = lineD + ' L' + x(serie.length - 1).toFixed(1) + ' ' + (pad.t + ih) +
-                  ' L' + x(0).toFixed(1) + ' ' + (pad.t + ih) + ' Z';
-
-      // Grid horizontal (3 líneas)
-      var gridY = '';
+      var area = line + 'L' + x(serie.length-1).toFixed(1) + ' ' + (pad.t+ih) + ' L' + x(0).toFixed(1) + ' ' + (pad.t+ih) + ' Z';
+      var grid = '';
       for (var g = 0; g < 3; g++) {
         var gy = (pad.t + (ih / 2) * g).toFixed(1);
-        gridY += '<line x1="' + pad.l + '" x2="' + (W - pad.r) + '" y1="' + gy + '" y2="' + gy + '" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>';
+        grid += '<line x1="'+pad.l+'" x2="'+(W-pad.r)+'" y1="'+gy+'" y2="'+gy+'" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>';
       }
-
-      // Etiquetas de fecha (3: inicio, medio, fin)
       var lbls = '';
-      function dateLbl (d) {
-        return d.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
-      }
+      function dLbl(d){ return d.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' }); }
       if (serie.length > 1) {
-        lbls += '<text x="' + x(0) + '" y="' + (H - 4) + '" fill="rgba(255,255,255,0.4)" font-size="9.5" font-family="JetBrains Mono, monospace">' + dateLbl(serie[0].fecha) + '</text>';
-        var midI = Math.floor(serie.length / 2);
-        lbls += '<text x="' + x(midI) + '" y="' + (H - 4) + '" fill="rgba(255,255,255,0.4)" font-size="9.5" font-family="JetBrains Mono, monospace" text-anchor="middle">' + dateLbl(serie[midI].fecha) + '</text>';
-        lbls += '<text x="' + x(serie.length - 1) + '" y="' + (H - 4) + '" fill="rgba(255,255,255,0.4)" font-size="9.5" font-family="JetBrains Mono, monospace" text-anchor="end">hoy</text>';
+        lbls += '<text x="'+x(0)+'" y="'+(H-4)+'" fill="rgba(255,255,255,0.4)" font-size="9.5" font-family="JetBrains Mono, monospace">'+dLbl(serie[0].fecha)+'</text>';
+        var mi = Math.floor(serie.length/2);
+        lbls += '<text x="'+x(mi)+'" y="'+(H-4)+'" fill="rgba(255,255,255,0.4)" font-size="9.5" font-family="JetBrains Mono, monospace" text-anchor="middle">'+dLbl(serie[mi].fecha)+'</text>';
+        lbls += '<text x="'+x(serie.length-1)+'" y="'+(H-4)+'" fill="rgba(255,255,255,0.4)" font-size="9.5" font-family="JetBrains Mono, monospace" text-anchor="end">hoy</text>';
       }
+      var lx = x(serie.length-1).toFixed(1);
+      var ly = y(serie[serie.length-1].valor).toFixed(1);
 
-      // Punto final destacado
-      var lastX = x(serie.length - 1).toFixed(1);
-      var lastY = y(serie[serie.length - 1].valor).toFixed(1);
-
-      var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' +
+      el.innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">' +
         '<defs>' +
-          '<linearGradient id="fxGrad" x1="0" y1="0" x2="0" y2="1">' +
-            '<stop offset="0%" stop-color="#4ADE80" stop-opacity="0.35"/>' +
-            '<stop offset="100%" stop-color="#4ADE80" stop-opacity="0"/>' +
-          '</linearGradient>' +
-          '<linearGradient id="fxLine" x1="0" y1="0" x2="1" y2="0">' +
-            '<stop offset="0%" stop-color="#06B6D4"/>' +
-            '<stop offset="100%" stop-color="#4ADE80"/>' +
-          '</linearGradient>' +
-        '</defs>' +
-        gridY +
-        '<path d="' + areaD + '" fill="url(#fxGrad)" />' +
-        '<path d="' + lineD + '" fill="none" stroke="url(#fxLine)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' +
-        '<circle cx="' + lastX + '" cy="' + lastY + '" r="4" fill="#4ADE80"/>' +
-        '<circle cx="' + lastX + '" cy="' + lastY + '" r="8" fill="#4ADE80" opacity="0.25"><animate attributeName="r" values="4;14;4" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite"/></circle>' +
-        lbls +
-        '</svg>';
-
-      chartEl.innerHTML = svg;
+        '<linearGradient id="fxGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4ADE80" stop-opacity="0.35"/><stop offset="100%" stop-color="#4ADE80" stop-opacity="0"/></linearGradient>' +
+        '<linearGradient id="fxLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#06B6D4"/><stop offset="100%" stop-color="#4ADE80"/></linearGradient>' +
+        '</defs>' + grid +
+        '<path d="'+area+'" fill="url(#fxGrad)" />' +
+        '<path d="'+line+'" fill="none" stroke="url(#fxLine)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' +
+        '<circle cx="'+lx+'" cy="'+ly+'" r="4" fill="#4ADE80"/>' +
+        '<circle cx="'+lx+'" cy="'+ly+'" r="8" fill="#4ADE80" opacity="0.25"><animate attributeName="r" values="4;14;4" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite"/></circle>' +
+        lbls + '</svg>';
     }
 
-    // Primer fetch + refresh cada 5 minutos
+    // ===================================================
+    // INTEGRACIÓN 2 · CRIPTO en CLP (CoinGecko)
+    // ===================================================
+    var COINS = [
+      { id: 'bitcoin',  symbol: 'BTC', name: 'Bitcoin',   cls: 'btc'  },
+      { id: 'ethereum', symbol: 'ETH', name: 'Ethereum',  cls: 'eth'  },
+      { id: 'tether',   symbol: 'USDT',name: 'Tether',    cls: 'usdt' }
+    ];
+
+    async function fetchCrypto () {
+      var listEl = document.getElementById('crypto-list');
+      var updEl = document.getElementById('crypto-updated');
+      try {
+        var ids = COINS.map(function (c) { return c.id; }).join(',');
+        var url = 'https://api.coingecko.com/api/v3/simple/price'
+                + '?ids=' + ids
+                + '&vs_currencies=clp'
+                + '&include_24hr_change=true';
+        var r = await fetch(url);
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        var j = await r.json();
+
+        var rows = COINS.map(function (c) {
+          var d = j[c.id];
+          if (!d) return '';
+          var price = d.clp;
+          var chg = d.clp_24h_change || 0;
+          var chgClass = chg >= 0 ? 'up' : 'down';
+          var chgArr = chg >= 0 ? '▲' : '▼';
+          return '' +
+            '<div class="crypto-row">' +
+              '<div class="crypto-icon ' + c.cls + '">' + escHTML(c.symbol.slice(0,3)) + '</div>' +
+              '<div class="crypto-name">' +
+                '<div class="n">' + escHTML(c.name) + '</div>' +
+                '<div class="s">' + escHTML(c.symbol) + ' / CLP</div>' +
+              '</div>' +
+              '<div class="crypto-price">$' + fmtCLPint(price) + '<span class="clp"> CLP</span></div>' +
+              '<div class="crypto-change ' + chgClass + '">' + chgArr + ' ' + Math.abs(chg).toFixed(2) + '%</div>' +
+            '</div>';
+        }).join('');
+
+        listEl.innerHTML = rows;
+        updEl.textContent = 'Actualizado ' + fmtTime(new Date()) + ' · CoinGecko';
+      } catch (err) {
+        listEl.innerHTML = '<div class="skeleton" style="position:relative;height:120px;color:var(--danger)">Sin datos · API saturada</div>';
+        updEl.textContent = 'Reintentando…';
+      }
+    }
+
+    // ===================================================
+    // INTEGRACIÓN 3 · NOTICIAS DE TECH/IA (Hacker News Algolia)
+    // ===================================================
+    async function fetchNews () {
+      var listEl = document.getElementById('news-list');
+      var updEl = document.getElementById('news-updated');
+      try {
+        // Búsqueda por relevancia con foco en IA / pagos / banca
+        var query = '(AI OR "machine learning" OR Claude OR OpenAI OR fintech OR banking)';
+        var url = 'https://hn.algolia.com/api/v1/search'
+                + '?query=' + encodeURIComponent(query)
+                + '&tags=story'
+                + '&hitsPerPage=4';
+        var r = await fetch(url);
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        var j = await r.json();
+        if (!j.hits || !j.hits.length) throw new Error('sin hits');
+
+        var html = j.hits.slice(0, 4).map(function (h) {
+          var safeTitle = escHTML(h.title || h.story_title || 'Sin título');
+          var url = safeUrl(h.url || ('https://news.ycombinator.com/item?id=' + h.objectID));
+          var pts = h.points || 0;
+          var comments = h.num_comments || 0;
+          var ago = h.created_at ? timeAgo(new Date(h.created_at)) : '';
+          return '' +
+            '<a class="news-item" href="' + escHTML(url) + '" target="_blank" rel="noopener noreferrer">' +
+              '<div class="title">' + safeTitle + '</div>' +
+              '<div class="meta">' +
+                '<span>HN</span>' +
+                (ago ? '<span>' + escHTML(ago) + '</span>' : '') +
+                '<span class="pts">▲ ' + pts + ' pts</span>' +
+                '<span>💬 ' + comments + '</span>' +
+                '<span class="arr">↗</span>' +
+              '</div>' +
+            '</a>';
+        }).join('');
+        listEl.innerHTML = html;
+        updEl.textContent = 'Actualizado ' + fmtTime(new Date()) + ' · HN Algolia';
+      } catch (err) {
+        listEl.innerHTML = '<div class="skeleton" style="position:relative;height:80px;color:var(--danger)">Sin datos del feed</div>';
+        updEl.textContent = 'Reintentando…';
+      }
+    }
+
+    // ===================================================
+    // Boot
+    // ===================================================
     fetchDolar();
-    setInterval(fetchDolar, 5 * 60 * 1000);
-    // Re-render del chart cuando cambie el tamaño
+    fetchCrypto();
+    fetchNews();
+    setInterval(fetchDolar,  5 * 60 * 1000);  // cada 5 min
+    setInterval(fetchCrypto, 60 * 1000);       // cada 60s
+    setInterval(fetchNews,   5 * 60 * 1000);  // cada 5 min
+
+    // Re-render del FX al resize
     var resizeT;
     window.addEventListener('resize', function () {
       clearTimeout(resizeT);
       resizeT = setTimeout(function () {
-        if (FX.data.length) {
-          var vs = FX.data.map(function (p) { return p.valor; });
-          drawChart(FX.data, Math.min.apply(null, vs), Math.max.apply(null, vs));
+        if (FX_DATA.length) {
+          var vs = FX_DATA.map(function (p) { return p.valor; });
+          drawFxChart(FX_DATA, Math.min.apply(null, vs), Math.max.apply(null, vs));
         }
       }, 200);
     });
 
     // ===================================================
-    // 6) PAGOS · selección de plan + checkout seguro
-    //    El frontend NO toca tarjetas — sólo llama al backend
-    //    /api/create-checkout-session que crea la sesión Stripe
-    //    y devuelve la URL de checkout para redirección.
+    // PAGOS · checkout seguro (idéntico a antes)
     // ===================================================
     var plans = document.querySelectorAll('.plan');
     plans.forEach(function (p) {
@@ -1331,18 +1726,12 @@
 
     btnPay.addEventListener('click', async function () {
       payErr.classList.remove('is-visible');
-      payErr.textContent = '';
-
       var selected = document.querySelector('.plan.is-selected');
-      if (!selected) {
-        return showPayError('Selecciona un plan primero.');
-      }
+      if (!selected) return showPayError('Selecciona un plan primero.');
 
       var amount = Number(selected.dataset.amount);
       var name = selected.dataset.name;
-      if (!amount || amount < 1000) {
-        return showPayError('Plan inválido.');
-      }
+      if (!amount || amount < 1000) return showPayError('Plan inválido.');
 
       btnPay.classList.add('is-loading');
       btnPay.disabled = true;
@@ -1353,23 +1742,20 @@
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           credentials: 'same-origin',
           body: JSON.stringify({
-            amount: amount,           // en CLP, entero
+            amount: amount,
             currency: 'clp',
             description: name,
             plan: selected.querySelector('input').value
           })
         });
-
         if (!resp.ok) {
           var msg = 'Error ' + resp.status;
           try { var je = await resp.json(); if (je && je.error) msg = je.error; } catch (_) {}
           throw new Error(msg);
         }
-
         var data = await resp.json();
         if (!data.url) throw new Error('Respuesta inválida del servidor');
 
-        // Redirige al checkout hosted de Stripe (URL https confiable)
         if (data.url.indexOf('https://checkout.stripe.com/') === 0 ||
             data.url.indexOf('https://billing.stripe.com/') === 0) {
           window.location.href = data.url;
@@ -1383,23 +1769,19 @@
         btnPay.disabled = false;
       }
     });
-
     function showPayError (msg) {
       payErr.textContent = msg;
       payErr.classList.add('is-visible');
     }
 
     // ===================================================
-    // 7) Reveal on scroll
+    // Reveal on scroll
     // ===================================================
     var els = document.querySelectorAll('.reveal');
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) {
-            e.target.classList.add('in');
-            io.unobserve(e.target);
-          }
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
         });
       }, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
       els.forEach(function (el) { io.observe(el); });
