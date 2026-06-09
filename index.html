@@ -1471,11 +1471,15 @@
         padding: 48px 32px 100px;
       }
       .card-hero {
-        grid-column: 1;
         position: sticky;
         top: 32px;
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
+        scrollbar-width: none;
       }
-      .stage > *:not(.card-hero):not(.site-footer) { grid-column: 2; }
+      .card-hero::-webkit-scrollbar { display: none; }
+      .content-col { min-width: 0; }
+      .content-col > :first-child { margin-top: 0; }
       .site-footer { grid-column: 1 / -1; }
 
       .portfolio-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1624,6 +1628,9 @@
         </a>
       </nav>
     </section>
+
+    <!-- === Columna de contenido (escritorio: a la derecha del hero) === -->
+    <div class="content-col">
 
     <!-- ===================== SOBRE ===================== -->
     <section class="section reveal" id="sobre">
@@ -2163,6 +2170,8 @@
         <div class="d">Escanea este código para abrir su tarjeta digital en cualquier teléfono.</div>
       </div>
     </section>
+
+    </div><!-- /content-col -->
 
     <!-- ===================== FOOTER ===================== -->
     <footer class="site-footer">
