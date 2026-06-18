@@ -1553,11 +1553,18 @@
     .novedad-mmd-inner {
       padding: 16px 12px 12px;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .novedad-mmd-inner svg {
+      display: block !important;
       width: 100% !important;
       max-width: 100% !important;
       height: auto !important;
+      min-width: 0 !important;
+    }
+    .novedad-mmd-inner .mermaid,
+    .novedad-mmd-inner > div {
+      width: 100% !important;
     }
     .novedad-mmd-legend {
       display: flex;
@@ -2425,7 +2432,7 @@
         <span>Desarrollo de software · Consultoría TI · Gestión de proyectos</span>
       </div>
       <div class="footer-line">
-        <span>1806206 · SII Chile · Boleta y factura electrónica</span>
+        <span>Inicio de actividades 28-04-2026 · SII Chile · Boleta y factura electrónica</span>
       </div>
 
       <div class="footer-line" style="margin-top:14px;">
@@ -2917,31 +2924,29 @@
   <script type="module">
     import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
 
-    const dark = document.documentElement.getAttribute('data-theme') === 'dark'
-               || window.matchMedia('(prefers-color-scheme: dark)').matches;
-
     mermaid.initialize({
       startOnLoad: false,
       theme: 'base',
       fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-      fontSize: 13,
+      fontSize: 14,
+      flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 50, rankSpacing: 60 },
       themeVariables: {
         darkMode: true,
-        fontSize: '13px',
+        fontSize: '14px',
         fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-        primaryColor: '#0E1A3D',
+        primaryColor: '#0D1B3E',
         primaryTextColor: '#CBD5E1',
         primaryBorderColor: '#5B8DEF',
-        secondaryColor: '#140D00',
+        secondaryColor: '#1C0E00',
         secondaryTextColor: '#FFB347',
-        secondaryBorderColor: '#FF6B6B',
-        tertiaryColor: '#050F1F',
-        tertiaryTextColor: '#94D4F0',
+        secondaryBorderColor: '#FF8C5A',
+        tertiaryColor: '#071525',
+        tertiaryTextColor: '#7EC8E3',
         tertiaryBorderColor: '#3B8BD4',
-        lineColor: '#64748B',
+        lineColor: '#4A5568',
         textColor: '#CBD5E1',
         nodeBorder: '#5B8DEF',
-        clusterBkg: '#080F20',
+        clusterBkg: '#080F22',
         clusterBorder: '#1E3A6A',
         edgeLabelBackground: '#0A1330',
         titleColor: '#F8FAFC',
@@ -2949,45 +2954,57 @@
     });
 
     const diagram = `graph TD
-  classDef externo fill:#0E1A3D,stroke:#5B8DEF,stroke-width:1.5px,color:#94A3B8
-  classDef dbrx fill:#1A0A00,stroke:#FF8C5A,stroke-width:1.5px,color:#FFB347
-  classDef seguridad fill:#050F1F,stroke:#3B8BD4,stroke-width:1.5px,color:#7EC8E3
+  classDef ext  fill:#0D1B3E,stroke:#5B8DEF,stroke-width:1.5px,color:#94A3B8
+  classDef dbrx fill:#1C0E00,stroke:#FF8C5A,stroke-width:1.5px,color:#FFB347
+  classDef sec  fill:#071525,stroke:#3B8BD4,stroke-width:1.5px,color:#7EC8E3
 
-  subgraph ANTES ["⚠ Arquitectura tradicional"]
+  subgraph ANTES["⚠ Arquitectura tradicional"]
     direction TB
-    A1[(BBDD Transaccional OLTP externa)]:::externo -->|ETL / ELT complejo — Airflow · Kafka| A2[(Cloud Storage — S3 / ADLS / GCS)]:::externo
-    A2 --> A3[Cómputo Databricks — Clusters dedicados]:::dbrx
-    A3 -->|Reverse ETL| A4[Aplicaciones / Dashboards]:::externo
-    A3 -.->|Tráfico expuesto a internet| A5[Riesgo de seguridad — Ruteo complejo]:::seguridad
+    A1[(BBDD Transaccional\nOLTP externa)]:::ext
+    A2[(Cloud Storage\nS3 / ADLS / GCS)]:::ext
+    A3[Cómputo Databricks\nClusters dedicados]:::dbrx
+    A4[Aplicaciones\ny Dashboards]:::ext
+    A5[Riesgo de seguridad\nRuteo por internet]:::sec
+    A1 -->|ETL / ELT — Airflow, Kafka| A2
+    A2 --> A3
+    A3 -->|Reverse ETL| A4
+    A3 -.->|Tráfico expuesto| A5
   end
 
-  subgraph DESPUES ["✓ Nueva arquitectura Databricks"]
+  subgraph DESPUES["✓ Nueva arquitectura Databricks"]
     direction TB
-    B0((Unity Catalog — Gobernanza unificada)):::dbrx
-    B1[(Lakebase — PostgreSQL serverless)]:::dbrx --- B0
-    B2[Cómputo serverless — SQL · Model Serving]:::dbrx --- B0
-    B3[Databricks Apps — Analítica nativa]:::dbrx -->|Lectura y Escritura directa| B1
-    B3 -->|Inferencia y Queries| B2
-    B2 ===>|Private Network Gateway — Túnel seguro sin internet| B4[APIs corporativas privadas — On-Premise]:::seguridad
+    B3[Databricks Apps\nAnalítica nativa]:::dbrx
+    B1[(Lakebase\nPostgreSQL serverless)]:::dbrx
+    B2[Cómputo serverless\nSQL · Model Serving]:::dbrx
+    B0((Unity Catalog\nGobernanza)):::dbrx
+    B4[APIs privadas\nOn-Premise / VPC]:::sec
+    B3 -->|Lectura / Escritura directa| B1
+    B3 -->|Inferencia / Queries| B2
+    B1 --- B0
+    B2 --- B0
+    B2 ==>|Private Network Gateway\nTúnel seguro| B4
   end
 
   ANTES ~~~ DESPUES`;
 
     async function renderMermaid() {
       var container = document.getElementById('mmd-nov-container');
-      var loader = document.getElementById('mmd-nov-loader');
       if (!container) return;
       try {
         var result = await mermaid.render('mmd-arch-databricks', diagram);
         container.innerHTML = result.svg;
         var svgEl = container.querySelector('svg');
         if (svgEl) {
+          svgEl.removeAttribute('width');
+          svgEl.removeAttribute('height');
+          svgEl.setAttribute('width', '100%');
           svgEl.style.width = '100%';
           svgEl.style.maxWidth = '100%';
           svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
         }
       } catch (err) {
-        container.innerHTML = '<p style="color:var(--danger);font-family:var(--mono);font-size:11px;padding:12px">Error al renderizar diagrama: ' + err.message + '</p>';
+        container.innerHTML = '<p style="color:var(--danger);font-family:var(--mono);font-size:11px;padding:12px">Error al renderizar: ' + err.message + '</p>';
       }
     }
 
