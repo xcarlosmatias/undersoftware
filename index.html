@@ -1423,16 +1423,6 @@
     .edu-item .e-ico svg { width: 18px; height: 18px; }
     .edu-item .e-t { color: var(--ink-0); font-weight: 700; font-size: 13.5px; }
     .edu-item .e-d { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin-top: 3px; }
-    .cert-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-    .cert-chips .chip {
-      font-family: var(--mono);
-      font-size: 10.5px;
-      color: var(--gold);
-      background: rgba(245,197,114,0.08);
-      border: 1px solid rgba(245,197,114,0.25);
-      padding: 5px 11px;
-      border-radius: 999px;
-    }
 
     /* === Nota demo en sección de pagos === */
     .pay-demo-note {
@@ -1457,6 +1447,153 @@
       box-shadow: 0 0 8px var(--mint);
     }
     .pay-demo-note a { color: var(--mint); font-weight: 600; }
+
+    /* ==========================================================
+       CERTIFICACIONES — credenciales verificables
+       ========================================================== */
+    .certs-card {
+      position: relative;
+      background:
+        radial-gradient(700px 220px at 100% 0%, rgba(245,197,114,0.09), transparent 60%),
+        var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px 24px;
+      margin-top: 24px;
+      overflow: hidden;
+    }
+    .certs-card::before {
+      content: "";
+      position: absolute;
+      top: -1px; left: 25%; right: 25%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .certs-card h2 em {
+      font-style: italic;
+      background: var(--grad-gold);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .certs-grid {
+      display: grid;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 13px 15px;
+      transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+    }
+    a.cert-item:hover {
+      border-color: rgba(245,197,114,0.45);
+      background: var(--surface-2);
+      transform: translateY(-1px);
+    }
+    a.cert-item:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+    .cert-item .c-ico {
+      width: 40px; height: 40px;
+      flex: 0 0 40px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .cert-item .c-ico svg { width: 20px; height: 20px; display: block; }
+    .c-ico.c-ms         { background: rgba(255,255,255,0.07); }
+    .c-ico.c-databricks { background: rgba(255,54,33,0.12);  color: #FF5F4A; }
+    .c-ico.c-itil       { background: rgba(214,0,28,0.12);   color: #F87171; }
+    .c-ico.c-cisco-net  { background: rgba(4,159,217,0.13);  color: #38BDF8; }
+    .c-ico.c-google     { background: rgba(255,255,255,0.07); }
+    .c-ico.c-cisco-sec  { background: rgba(108,192,74,0.13); color: #86D96C; }
+    .c-ico.c-scrum      { background: rgba(74,222,128,0.11); color: var(--mint); }
+    .cert-item .c-body { flex: 1; min-width: 0; }
+    .cert-item .c-t {
+      display: block;
+      color: var(--ink-0);
+      font-weight: 700;
+      font-size: 13.5px;
+      line-height: 1.3;
+    }
+    .cert-item .c-m {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: var(--ink-3);
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cert-item .c-go {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex: 0 0 auto;
+    }
+    .cert-item .c-verify {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      opacity: 0;
+      transform: translateX(4px);
+      transition: opacity 0.25s ease, transform 0.25s ease, color 0.25s ease;
+    }
+    a.cert-item:hover .c-verify { opacity: 1; transform: none; color: var(--gold); }
+    .cert-item .c-arr {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 16px;
+      color: var(--ink-3);
+      transition: transform 0.25s ease, color 0.25s ease;
+    }
+    a.cert-item:hover .c-arr { transform: translate(2px, -2px); color: var(--gold); }
+    .cert-item .c-valid {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      color: var(--mint);
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.25);
+      padding: 4px 9px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+    .cert-item .c-valid .v-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 8px var(--mint);
+    }
+    .certs-foot {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--ink-3);
+    }
+    .certs-foot .f-arr { color: var(--gold); font-family: var(--serif); font-style: italic; }
 
     /* ==========================================================
        LAYOUT ESCRITORIO — tarjeta fija + contenido en columna
@@ -1489,6 +1626,7 @@
       .cases { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .skills-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .edu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .certs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .plans { grid-template-columns: 1fr; }
     }
 
@@ -1499,6 +1637,7 @@
       .service:nth-child(5) { grid-column: 1 / -1; }
       .skills-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .edu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .certs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     /* ==========================================================
@@ -1740,6 +1879,11 @@
         <a class="section-chip is-mint" href="#trayectoria">
           <span class="dot"></span>
           <span>Trayectoria</span>
+          <span class="arr">→</span>
+        </a>
+        <a class="section-chip is-gold" href="#certificaciones">
+          <span class="dot"></span>
+          <span>Certificaciones</span>
           <span class="arr">→</span>
         </a>
         <a class="section-chip" href="#novedades" style="color:var(--cobalt);border-color:rgba(91,141,239,0.35);background:rgba(91,141,239,0.06)">
@@ -2308,13 +2452,107 @@
         </div>
       </div>
 
-      <div class="cert-chips">
-        <span class="chip">ITIL® 4 Foundation</span>
-        <span class="chip">Databricks Fundamentals</span>
-        <span class="chip">Google Technical Support</span>
-        <span class="chip">Cisco Cybersecurity Essentials</span>
-        <span class="chip">Cisco Networking Essentials</span>
-        <span class="chip">Scrum Fundamentals</span>
+    </section>
+
+    <!-- ===================== CERTIFICACIONES ===================== -->
+    <section class="certs-card reveal" id="certificaciones">
+      <div class="section-eyebrow"><span class="dot" style="background:var(--gold);box-shadow:0 0 8px var(--gold)"></span><span>Certificaciones · Credenciales oficiales</span></div>
+      <h2 style="font-family:var(--serif);font-size:clamp(26px,6vw,32px);line-height:1.1;color:var(--ink-0);font-weight:400;margin:0 0 14px;letter-spacing:-0.015em;">Formación <em>certificada</em>, verificable al instante.</h2>
+      <p style="font-size:14px;color:var(--ink-2);margin:0;">
+        Cada credencial enlaza directamente a la verificación oficial del emisor.
+      </p>
+
+      <div class="certs-grid">
+
+        <!-- ITIL 4 Foundation · PeopleCert -->
+        <div class="cert-item">
+          <span class="c-ico c-itil" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          </span>
+          <span class="c-body">
+            <span class="c-t">ITIL® 4 Foundation · IT Service Management</span>
+            <span class="c-m">PeopleCert · AXELOS · N° GR671665057CO</span>
+          </span>
+          <span class="c-valid"><span class="v-dot"></span>Vigente 2027</span>
+        </div>
+
+        <!-- Microsoft Certified: Azure Data Fundamentals (DP-900) -->
+        <a class="cert-item" href="https://learn.microsoft.com/api/credentials/share/es-mx/CARLOSOLIVERCARVAJAL-8514/1443C03B0B7A666E" target="_blank" rel="noopener noreferrer">
+          <span class="c-ico c-ms" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="9.5" height="9.5" fill="#F25022"/><rect x="12.5" y="2" width="9.5" height="9.5" fill="#7FBA00"/><rect x="2" y="12.5" width="9.5" height="9.5" fill="#00A4EF"/><rect x="12.5" y="12.5" width="9.5" height="9.5" fill="#FFB900"/></svg>
+          </span>
+          <span class="c-body">
+            <span class="c-t">Azure Data Fundamentals · DP-900</span>
+            <span class="c-m">Microsoft Certified · Credencial oficial</span>
+          </span>
+          <span class="c-go"><span class="c-verify">Verificar</span><span class="c-arr">↗</span></span>
+        </a>
+
+        <!-- Databricks Fundamentals -->
+        <a class="cert-item" href="https://credentials.databricks.com/48b1e91c-f13a-4c45-bcfd-f087b9637e8b#acc.xk6epAiC" target="_blank" rel="noopener noreferrer">
+          <span class="c-ico c-databricks" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>
+          </span>
+          <span class="c-body">
+            <span class="c-t">Databricks Fundamentals</span>
+            <span class="c-m">Databricks Academy · Lakehouse &amp; IA</span>
+          </span>
+          <span class="c-go"><span class="c-verify">Verificar</span><span class="c-arr">↗</span></span>
+        </a>
+
+        <!-- Cisco Networking Essentials -->
+        <a class="cert-item" href="https://www.credly.com/badges/7b028b00-464b-40e1-92d2-a69d35193800" target="_blank" rel="noopener noreferrer">
+          <span class="c-ico c-cisco-net" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="12" width="2.6" height="6" rx="1.3"/><rect x="6.4" y="8" width="2.6" height="10" rx="1.3"/><rect x="10.7" y="4" width="2.6" height="14" rx="1.3"/><rect x="15" y="8" width="2.6" height="10" rx="1.3"/><rect x="19.4" y="12" width="2.6" height="6" rx="1.3"/></svg>
+          </span>
+          <span class="c-body">
+            <span class="c-t">Networking Essentials</span>
+            <span class="c-m">Cisco Networking Academy · Credly · 2021</span>
+          </span>
+          <span class="c-go"><span class="c-verify">Verificar</span><span class="c-arr">↗</span></span>
+        </a>
+
+        <!-- Cisco Cybersecurity Essentials -->
+        <a class="cert-item" href="https://www.credly.com/badges/eb4581f0-a97c-4387-ac1c-d7ed9acf8dd5" target="_blank" rel="noopener noreferrer">
+          <span class="c-ico c-cisco-sec" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><rect x="9" y="10" width="6" height="5" rx="1"/><path d="M10 10V8.5a2 2 0 0 1 4 0V10"/></svg>
+          </span>
+          <span class="c-body">
+            <span class="c-t">Cybersecurity Essentials</span>
+            <span class="c-m">Cisco Networking Academy · Credly</span>
+          </span>
+          <span class="c-go"><span class="c-verify">Verificar</span><span class="c-arr">↗</span></span>
+        </a>
+
+        <!-- Google Technical Support Fundamentals -->
+        <a class="cert-item" href="https://www.coursera.org/account/accomplishments/verify/PQLCCJDUHZ8S" target="_blank" rel="noopener noreferrer">
+          <span class="c-ico c-google" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+          </span>
+          <span class="c-body">
+            <span class="c-t">Technical Support Fundamentals</span>
+            <span class="c-m">Google · Coursera · Verificación oficial</span>
+          </span>
+          <span class="c-go"><span class="c-verify">Verificar</span><span class="c-arr">↗</span></span>
+        </a>
+
+        <!-- Scrum Fundamentals Certified -->
+        <a class="cert-item" href="https://c46e136a583f7e334124-ac22991740ab4ff17e21daf2ed577041.ssl.cf1.rackcdn.com/Certificate/ScrumFundamentalsCertified-CarlosOliver-791014.pdf" target="_blank" rel="noopener noreferrer">
+          <span class="c-ico c-scrum" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/><path d="m9 12 2 2 4-4"/></svg>
+          </span>
+          <span class="c-body">
+            <span class="c-t">Scrum Fundamentals Certified · SFC™</span>
+            <span class="c-m">SCRUMstudy · ID 791014 · 2020</span>
+          </span>
+          <span class="c-go"><span class="c-verify">Verificar</span><span class="c-arr">↗</span></span>
+        </a>
+
+      </div>
+
+      <div class="certs-foot">
+        <span class="f-arr">↗</span>
+        <span>Cada tarjeta abre la verificación oficial ante el organismo emisor.</span>
       </div>
     </section>
 
