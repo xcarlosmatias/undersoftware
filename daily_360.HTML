@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Ruleta Aleatoria - Daily</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .wheel-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* NUEVO: Contenedor estricto solo para la rueda y la flecha */
+        .canvas-wrapper {
+            position: relative;
+            width: 450px;
+            height: 450px;
+        }
+
+        canvas {
+            background-color: transparent;
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            width: 100%;
+            height: 100%;
+        }
+
+        /* La flecha ahora se basa 100% en el canvas, no en los botones */
+        .arrow {
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            border-right: 30px solid #ff3b30;
+            z-index: 10;
+        }
+
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        #btnSpin {
+            background-color: #007aff;
+            color: white;
+        }
+
+        #btnSpin:hover {
+            background-color: #0056b3;
+        }
+
+        #btnSpin:disabled {
+            background-color: #a2a2a2;
+            cursor: not-allowed;
+        }
+
+        #btnReset {
+            background-color: #ff3b30;
+            color: white;
+        }
+
+        #btnReset:hover {
+            background-color: #c62828;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            width: 320px;
+            gap: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 250px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            resize: none;
+            font-size: 14px;
+            box-sizing: border-box;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #007aff;
+        }
+
+        .winner-pop {
+            padding: 12px;
+            background-color: #e3f2fd;
+            border-left: 5px solid #007aff;
+            color: #0d47a1;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .copy-box {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .copy-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-content {
+            background-color: #f8f9fa;
+            border: 1px dashed #bbb;
+            padding: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            min-height: 55px;
+        }
+
+        .btn-copy {
+            background-color: #34c759;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+
+        .btn-copy:hover {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>La Ruleta Aleatoria - Daily</h1>
+
+    <div class="container">
+        <div class="wheel-box">
+            <!-- Wrapper aislado para prevenir que la flecha se mueva con el CSS -->
+            <div class="canvas-wrapper">
+                <div class="arrow"></div>
+                <canvas id="canvas" width="450" height="450"></canvas>
+            </div>
+            
+            <div class="controls">
+                <div class="btn-group">
+                    <button id="btnSpin" onclick="spinWheel()">Iniciar</button>
+                    <button id="btnReset" onclick="resetDaily()">Reiniciar Daily</button>
+                </div>
+                <div id="winner" class="winner-pop" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div>
+                <label style="margin-bottom: 8px; font-weight: bold; color: #555; display: block;">Editar Opciones (una por línea):</label>
+                <textarea id="namesList" oninput="updateWheel()">Rubén Contreras
+Franco Labra
+Victor Vinett
+Cristian Orellana
+Simon Faundez
+Hans Ferreira
+Carlos Oliver
+Marcelo Pagano
+Esteban Pérez
+Marcelo Rojas
+Ronald Luna
+Daniel Corvera
+Francisco Gonzalez
+Larry Caichihua
+Juan Escanilla</textarea>
+            </div>
+
+            <div class="copy-box">
+                <div class="copy-title">
+                    <span>📋 Formato para Chat</span>
+                    <button class="btn-copy" onclick="copyToClipboard()">Copiar</button>
+                </div>
+                <div id="copyContent" class="copy-content">Selecciona Titular y Backup girando la ruleta...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /*************************************************************************
+         * DEV: carlos.oliverc@bci.cl
+         * FECHA: 31-07-2026
+         * VERSION: 2.3.0
+         * DESCRIPCION: BUG FIX - Aislamiento de la flecha en wrapper. Sincronización 100% precisa.
+         *************************************************************************/
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const textarea = document.getElementById("namesList");
+        const winnerDiv = document.getElementById("winner");
+        const btnSpin = document.getElementById("btnSpin");
+        const copyContentDiv = document.getElementById("copyContent");
+
+        let names = [];
+        let colors = [];
+        
+        let startAngle = 0;
+        let arc = 0;
+        let spinTimeout = null;
+        let spinAngleStart = 10;
+        let spinTime = 0;
+        let spinTimeTotal = 0;
+
+        let titular = "";
+        let backup = "";
+        let steps = 0; 
+
+        function generateColors(num) {
+            const palette = [
+                "#ff9ff3", "#feca57", "#ff6b6b", "#48dbfb", "#1dd1a1",
+                "#a29bfe", "#ffeaa7", "#fab1a0", "#74b9ff", "#55efc4",
+                "#fd79a8", "#fdcb6e", "#e17055", "#0984e3", "#00b894"
+            ];
+            colors = [];
+            for (let i = 0; i < num; i++) {
+                colors.push(palette[i % palette.length]);
+            }
+        }
+
+        function drawWheel() {
+            names = textarea.value.split('\n').map(name => name.trim()).filter(name => name !== "");
+            
+            if (names.length === 0) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+
+            if (colors.length !== names.length) {
+                generateColors(names.length);
+            }
+
+            const numOptions = names.length;
+            arc = Math.PI * 2 / numOptions;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = canvas.width / 2 - 10;
+
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+
+            for (let i = 0; i < numOptions; i++) {
+                const angle = startAngle + i * arc;
+                ctx.fillStyle = colors[i];
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, angle, angle + arc, false);
+                ctx.lineTo(centerX, centerY);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.save();
+                ctx.fillStyle = "#333333";
+                ctx.font = "bold 12px sans-serif";
+                ctx.translate(centerX, centerY);
+                ctx.rotate(angle + arc / 2);
+                
+                const text = names[i];
+                const maxTextWidth = radius * 0.7;
+                let textToDraw = text;
+                if (ctx.measureText(text).width > maxTextWidth) {
+                    while (ctx.measureText(textToDraw + "...").width > maxTextWidth && textToDraw.length > 0) {
+                        textToDraw = textToDraw.slice(0, -1);
+                    }
+                    textToDraw += "...";
+                }
+
+                ctx.fillText(textToDraw, radius / 2.5, 5);
+                ctx.restore();
+            }
+        }
+
+        function updateWheel() {
+            colors = [];
+            drawWheel();
+        }
+
+        function getNextBusinessDate() {
+            let date = new Date();
+            do {
+                date.setDate(date.getDate() + 1);
+            } while (date.getDay() === 0 || date.getDay() === 6); 
+
+            const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+            const nombreDia = diasSemana[date.getDay()];
+
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+
+            return `Daily ${nombreDia} ${day}-${month}-${year}`;
+        }
+
+        function updateTemplate() {
+            const nextDailyText = getNextBusinessDate();
+            copyContentDiv.innerText = `${nextDailyText}\nTitular: ${titular || '⏳'}\nBackup: ${backup || '⏳'}`;
+        }
+
+        function spinWheel() {
+            if (names.length === 0) return;
+            if (steps >= 2) {
+                alert("Ya se eligieron Titular y Backup. Haz clic en 'Reiniciar Daily' para comenzar de nuevo.");
+                return;
+            }
+            
+            btnSpin.disabled = true;
+            spinAngleStart = Math.random() * 10 + 15;
+            spinTime = 0;
+            spinTimeTotal = Math.random() * 2000 + 4000;
+            rotateWheel();
+        }
+
+        function rotateWheel() {
+            spinTime += 30;
+            if (spinTime >= spinTimeTotal) {
+                stopRotateWheel();
+                return;
+            }
+            const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+            startAngle += (spinAngle * Math.PI / 180);
+            drawWheel();
+            spinTimeout = setTimeout(rotateWheel, 30);
+        }
+
+        function stopRotateWheel() {
+            clearTimeout(spinTimeout);
+            btnSpin.disabled = false;
+            
+            // Detección matemática exacta a 0 radianes
+            let normalizedAngle = startAngle % (2 * Math.PI);
+            if (normalizedAngle < 0) normalizedAngle += (2 * Math.PI);
+            
+            let index = Math.floor((2 * Math.PI - normalizedAngle) / arc) % names.length;
+            if (index < 0) index += names.length;
+            
+            let elegido = names[index];
+
+            // Previene Backup duplicado en memoria sin romper la estructura de la rueda
+            if (steps === 1 && elegido === titular) {
+                index = (index + 1) % names.length;
+                elegido = names[index];
+            }
+
+            steps++;
+
+            if (steps === 1) {
+                titular = elegido;
+                winnerDiv.innerHTML = "📢 ¡PRESENTADOR (Titular): " + titular + "! 📢<br><small style='font-weight:normal; color:#555;'>¡Gira de nuevo para el Backup!</small>";
+                winnerDiv.style.display = "block";
+                btnSpin.innerText = "Girar Backup";
+            } else if (steps === 2) {
+                backup = elegido;
+                winnerDiv.innerHTML = "📢 ¡PRESENTADOR (Backup): " + backup + "! 📢<br><small style='font-weight:normal; color:#555;'>¡Listo! Ya tienes el equipo para la Daily.</small>";
+                winnerDiv.style.display = "block";
+                btnSpin.disabled = true;
+                btnSpin.innerText = "Completado";
+            }
+
+            updateTemplate();
+        }
+
+        function resetDaily() {
+            location.reload(); 
+        }
+
+        function copyToClipboard() {
+            const text = copyContentDiv.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("¡Texto copiado al portapapeles listo para enviar al chat! 🚀");
+            }).catch(err => {
+                alert("Error al copiar: ", err);
+            });
+        }
+
+        function easeOut(t, b, c, d) {
+            const ts = (t /= d) * t;
+            const tc = ts * t;
+            return b + c * (tc + -3 * ts + 3 * t);
+        }
+
+        drawWheel();
+        updateTemplate();
+    </script>
+</body>
+</html>
