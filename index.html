@@ -3,425 +3,489 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Carlos Oliver · Undersoftware — Consola</title>
-<meta name="description" content="Carlos Oliver Carvajal — Ingeniero de Software y Líder de Proyectos TI. Observabilidad, arquitectura, ciberseguridad e integración de medios de pago. Portafolio con integraciones en vivo, incluyendo vulnerabilidades NVD en tiempo real.">
+<title>Carlos Oliver · Undersoftware — Ingeniería para sistemas críticos</title>
+<meta name="description" content="Carlos Oliver Carvajal — Ingeniero de Software y Líder de Proyectos TI. Arquitectura, observabilidad, ciberseguridad e integración de medios de pago para banca y fintech. Portafolio con integraciones en vivo.">
 <meta name="author" content="Carlos Matías Oliver Carvajal">
-<meta name="theme-color" content="#0B1622">
+<meta name="theme-color" content="#060B16">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="Carlos Oliver · Undersoftware">
-<meta property="og:description" content="Ingeniería para sistemas críticos. Banca, pagos, observabilidad y ciberseguridad. Con panel de vulnerabilidades NVD en vivo.">
+<meta property="og:description" content="Ingeniería para sistemas críticos. Banca · Pagos · Observabilidad · Ciberseguridad.">
 <meta property="og:type" content="profile">
 <link rel="canonical" href="https://www.undersoftware.cl/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --fondo:#0B1622;        /* azul petróleo profundo */
-  --panel:#101E2E;        /* superficie de panel */
-  --panel-alt:#0D1926;
-  --linea:#22364B;        /* reglas de consola */
-  --linea-suave:#182A3C;
-  --ambar:#F5A623;        /* fósforo ámbar */
-  --ambar-tenue:#8A6420;
-  --tinta:#E7E1D3;        /* texto hueso */
-  --tinta-media:#9AA7B4;
-  --tinta-baja:#5F7183;
-  --ok:#3FBF8F;
-  --critico:#E5484D;
-  --alto:#F76B15;
-  --medio:#F5D90A;
-  --bajo:#3FBF8F;
+  --noche:#060B16;          /* azul medianoche */
+  --noche-2:#0A1220;
+  --panel:rgba(255,255,255,.028);
+  --panel-borde:rgba(255,255,255,.09);
+  --panel-borde-hover:rgba(212,175,106,.45);
+  --oro:#D4AF6A;            /* dorado champán */
+  --oro-claro:#E8CD96;
+  --oro-brillo:rgba(212,175,106,.14);
+  --blanco:#F4F2ED;
+  --gris:#A7B0BD;
+  --gris-2:#6C7683;
+  --ok:#4ECBA0;
+  --critico:#F0565C;
+  --alto:#F5883D;
+  --medio:#E8C547;
+  --bajo:#4ECBA0;
+  --radio:16px;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Archivo',system-ui,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,monospace;
-  --sans:'IBM Plex Sans',system-ui,sans-serif;
-  --cond:'IBM Plex Sans Condensed',var(--sans);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 body{
-  background:var(--fondo);
-  color:var(--tinta);
-  font-family:var(--sans);
-  font-size:16px;line-height:1.6;
+  background:var(--noche);color:var(--blanco);
+  font-family:var(--sans);font-size:16.5px;line-height:1.65;
   -webkit-font-smoothing:antialiased;
 }
-a{color:var(--ambar);text-decoration:none}
-a:hover{text-decoration:underline;text-underline-offset:3px}
-a:focus-visible,button:focus-visible{outline:2px solid var(--ambar);outline-offset:3px;border-radius:2px}
-::selection{background:var(--ambar);color:var(--fondo)}
+a{color:var(--oro);text-decoration:none}
+a:focus-visible,button:focus-visible{outline:2px solid var(--oro);outline-offset:3px;border-radius:4px}
+::selection{background:var(--oro);color:var(--noche)}
+img{max-width:100%}
 
-/* ---------- estructura: riel + contenido ---------- */
-.consola{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
-.riel{
-  border-right:1px solid var(--linea);
-  padding:28px 20px;
-  position:sticky;top:0;height:100vh;
-  display:flex;flex-direction:column;gap:26px;
-  background:var(--panel-alt);
-}
-.riel-marca{font-family:var(--cond);font-weight:700;font-size:1.05rem;letter-spacing:.02em;color:var(--tinta)}
-.riel-marca small{display:block;font-family:var(--mono);font-weight:400;font-size:.68rem;color:var(--ambar);margin-top:2px}
-.riel-reloj{font-family:var(--mono);font-size:.78rem;color:var(--tinta-media);border:1px solid var(--linea);padding:10px 12px;background:var(--fondo)}
-.riel-reloj b{color:var(--ambar);font-weight:600;display:block;font-size:1.05rem}
-.riel nav{display:flex;flex-direction:column;gap:2px;font-size:.86rem}
-.riel nav a{
-  color:var(--tinta-media);padding:6px 10px;border-left:2px solid transparent;
-}
-.riel nav a:hover{color:var(--tinta);border-left-color:var(--ambar);text-decoration:none;background:var(--linea-suave)}
-.riel-pie{margin-top:auto;font-family:var(--mono);font-size:.68rem;color:var(--tinta-baja);line-height:1.8}
-.riel-pie .punto-ok{color:var(--ok)}
-main{min-width:0}
+.contenedor{max-width:1120px;margin:0 auto;padding:0 28px}
 
-/* ---------- secciones regladas ---------- */
-section{border-bottom:1px solid var(--linea);padding:56px 48px;scroll-margin-top:12px}
-.marco{max-width:900px}
-.sec-id{
-  font-family:var(--mono);font-size:.72rem;color:var(--tinta-baja);
-  margin-bottom:14px;display:flex;align-items:center;gap:10px
+/* ================= NAV ================= */
+.navegacion{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:rgba(6,11,22,.78);
+  border-bottom:1px solid rgba(255,255,255,.06);
 }
-.sec-id::after{content:"";flex:1;height:1px;background:var(--linea-suave)}
-h2{font-family:var(--cond);font-weight:700;font-size:clamp(1.6rem,3.2vw,2.3rem);line-height:1.15;margin-bottom:14px;letter-spacing:-.01em}
-.entrada{color:var(--tinta-media);max-width:62ch}
+.nav-interior{display:flex;align-items:center;gap:28px;height:72px}
+.logo{font-family:var(--serif);font-size:1.25rem;color:var(--blanco);letter-spacing:.01em}
+.logo em{color:var(--oro);font-style:normal}
+.nav-links{display:flex;gap:24px;margin-left:auto;font-size:.9rem}
+.nav-links a{color:var(--gris);transition:color .2s}
+.nav-links a:hover{color:var(--blanco)}
+.nav-cta{
+  background:linear-gradient(135deg,var(--oro),#B8934F);
+  color:var(--noche);font-weight:600;font-size:.88rem;
+  padding:10px 22px;border-radius:99px;white-space:nowrap;
+  box-shadow:0 4px 18px rgba(212,175,106,.25);
+  transition:transform .2s,box-shadow .2s;
+}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(212,175,106,.38)}
 
-/* ---------- hero ---------- */
-.hero{padding:72px 48px 60px}
+/* ================= HERO ================= */
+.hero{position:relative;overflow:hidden;padding:110px 0 90px;text-align:center}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(600px 340px at 50% -60px, rgba(212,175,106,.16), transparent 70%),
+    radial-gradient(900px 500px at 85% 110%, rgba(38,64,120,.28), transparent 65%);
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  border:1px solid var(--panel-borde);border-radius:99px;
+  padding:7px 18px;font-size:.82rem;color:var(--gris);
+  background:var(--panel);margin-bottom:28px;
+}
+.hero-eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
 .hero h1{
-  font-family:var(--cond);font-weight:700;
-  font-size:clamp(2.6rem,6.5vw,4.6rem);
-  line-height:.98;letter-spacing:-.02em;
+  font-family:var(--serif);font-weight:600;
+  font-size:clamp(2.7rem,6vw,4.7rem);line-height:1.06;letter-spacing:-.015em;
+  max-width:19ch;margin:0 auto;
 }
-.hero .rol{font-family:var(--mono);color:var(--ambar);font-size:clamp(.85rem,1.6vw,1rem);margin:18px 0 8px}
-.hero .subrol{color:var(--tinta-media);max-width:56ch}
-.hero-acciones{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-.boton{
-  font-family:var(--mono);font-size:.82rem;font-weight:500;
-  border:1px solid var(--linea);color:var(--tinta);
-  padding:10px 16px;background:var(--panel);cursor:pointer;display:inline-block
+.hero h1 .dorado{
+  background:linear-gradient(120deg,var(--oro-claro),var(--oro) 60%,#B8934F);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.boton:hover{border-color:var(--ambar);color:var(--ambar);text-decoration:none}
-.boton-ambar{background:var(--ambar);border-color:var(--ambar);color:var(--fondo);font-weight:600}
-.boton-ambar:hover{background:#FFC04D;color:var(--fondo)}
-.hero-estado{
-  margin-top:34px;font-family:var(--mono);font-size:.75rem;color:var(--tinta-baja);
-  display:flex;flex-wrap:wrap;gap:8px 22px
+.hero-baja{color:var(--gris);max-width:58ch;margin:26px auto 0;font-size:1.08rem}
+.hero-botones{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:38px}
+.boton-primario{
+  background:linear-gradient(135deg,var(--oro),#B8934F);color:var(--noche);
+  font-weight:600;padding:15px 34px;border-radius:99px;font-size:.98rem;
+  box-shadow:0 6px 24px rgba(212,175,106,.28);transition:transform .2s,box-shadow .2s;
 }
-.hero-estado .ok::before{content:"●";color:var(--ok);margin-right:7px}
+.boton-primario:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(212,175,106,.4)}
+.boton-secundario{
+  border:1px solid var(--panel-borde);color:var(--blanco);
+  padding:15px 30px;border-radius:99px;font-size:.98rem;background:var(--panel);
+  transition:border-color .2s,background .2s;
+}
+.boton-secundario:hover{border-color:var(--oro);background:var(--oro-brillo)}
+.hero-cifras{
+  display:flex;gap:0;justify-content:center;flex-wrap:wrap;margin-top:64px;
+  border:1px solid var(--panel-borde);border-radius:var(--radio);
+  background:var(--panel);overflow:hidden;
+}
+.cifra{padding:24px 40px;border-right:1px solid var(--panel-borde);min-width:180px}
+.cifra:last-child{border-right:0}
+.cifra b{display:block;font-family:var(--serif);font-size:1.9rem;color:var(--oro)}
+.cifra span{font-size:.82rem;color:var(--gris)}
 
-/* ---------- paneles en vivo ---------- */
-.tablero{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--linea);border:1px solid var(--linea);margin-top:28px}
-.panel{background:var(--panel);padding:20px 22px;min-height:220px}
-.panel-cve{grid-column:1 / -1}
-.panel-cab{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:14px;border-bottom:1px solid var(--linea-suave);padding-bottom:10px}
-.panel-cab h3{font-family:var(--cond);font-weight:600;font-size:1.05rem}
-.panel-cab .fuente{font-family:var(--mono);font-size:.68rem;color:var(--tinta-baja)}
-.dato-grande{font-family:var(--mono);font-size:2rem;font-weight:600;color:var(--ambar)}
-.dato-sub{font-family:var(--mono);font-size:.72rem;color:var(--tinta-media)}
-.mini-grilla{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
-.mini-grilla div{border:1px solid var(--linea-suave);padding:8px 10px}
-.mini-grilla b{display:block;font-family:var(--mono);font-size:.82rem;color:var(--tinta)}
-.mini-grilla span{font-size:.68rem;color:var(--tinta-baja);font-family:var(--mono)}
-.fila-activo{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--linea-suave);font-family:var(--mono);font-size:.82rem}
+/* ================= SECCIONES ================= */
+section{padding:88px 0}
+.cabecera-seccion{max-width:640px;margin-bottom:46px}
+.cabecera-seccion.centrada{margin-left:auto;margin-right:auto;text-align:center}
+.miga{color:var(--oro);font-size:.85rem;font-weight:600;letter-spacing:.06em;margin-bottom:12px}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.8rem,3.6vw,2.6rem);line-height:1.15;letter-spacing:-.01em}
+.baja{color:var(--gris);margin-top:14px;font-size:1.02rem}
+
+/* ================= TARJETAS EN VIVO ================= */
+.rejilla-vivo{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.tarjeta{
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--panel-borde);border-radius:var(--radio);
+  padding:26px 28px;transition:border-color .25s,transform .25s,box-shadow .25s;
+}
+.tarjeta:hover{border-color:var(--panel-borde-hover);transform:translateY(-3px);box-shadow:0 18px 44px rgba(0,0,0,.35)}
+.tarjeta-cab{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:18px}
+.tarjeta-cab h3{font-size:1.06rem;font-weight:600}
+.pill-fuente{font-family:var(--mono);font-size:.66rem;color:var(--gris-2);border:1px solid var(--panel-borde);border-radius:99px;padding:3px 10px;white-space:nowrap}
+.dato-grande{font-family:var(--serif);font-size:2.5rem;color:var(--blanco)}
+.dato-sub{font-size:.82rem;color:var(--gris)}
+#grafico-dolar{width:100%;height:60px;margin-top:16px;display:block}
+.mini-grilla{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.mini-grilla div{background:rgba(255,255,255,.03);border-radius:10px;padding:10px 12px}
+.mini-grilla b{display:block;font-family:var(--mono);font-size:.86rem}
+.mini-grilla span{font-size:.7rem;color:var(--gris-2)}
+.fila-activo{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.92rem}
 .fila-activo:last-child{border-bottom:0}
-.fila-activo .sube{color:var(--ok)}
-.fila-activo .baja{color:var(--critico)}
-.fila-hn{padding:8px 0;border-bottom:1px solid var(--linea-suave);font-size:.85rem}
+.fila-activo .precio{font-family:var(--mono);font-size:.85rem}
+.sube{color:var(--ok)} .baja-pct{color:var(--critico)}
+.fila-hn{padding:11px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.92rem}
 .fila-hn:last-child{border-bottom:0}
-.fila-hn a{color:var(--tinta)}
-.fila-hn a:hover{color:var(--ambar)}
-.fila-hn small{display:block;font-family:var(--mono);font-size:.68rem;color:var(--tinta-baja);margin-top:2px}
-#grafico-dolar{width:100%;height:56px;margin-top:14px;display:block}
-
-/* ---------- panel CVE (protagonista) ---------- */
-.cve-lista{display:flex;flex-direction:column}
-.cve-item{
-  display:grid;grid-template-columns:150px 86px 1fr;gap:14px;align-items:start;
-  padding:12px 0;border-bottom:1px solid var(--linea-suave)
-}
-.cve-item:last-child{border-bottom:0}
-.cve-id{font-family:var(--mono);font-size:.8rem;font-weight:600}
-.cve-id a{color:var(--tinta)}
-.cve-id a:hover{color:var(--ambar)}
-.cve-id time{display:block;font-weight:400;font-size:.66rem;color:var(--tinta-baja);margin-top:3px}
-.sev{font-family:var(--mono);font-size:.66rem;font-weight:600;padding:3px 7px;text-align:center;border:1px solid}
-.sev-CRITICAL{color:var(--critico);border-color:var(--critico)}
-.sev-HIGH{color:var(--alto);border-color:var(--alto)}
-.sev-MEDIUM{color:var(--medio);border-color:var(--medio)}
-.sev-LOW{color:var(--bajo);border-color:var(--bajo)}
-.sev-NA{color:var(--tinta-baja);border-color:var(--linea)}
-.cve-desc{font-size:.83rem;color:var(--tinta-media);line-height:1.5}
-.cve-barra{height:3px;background:var(--linea-suave);margin-top:7px;max-width:220px}
-.cve-barra i{display:block;height:100%}
-.cve-resumen{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--mono);font-size:.72rem;color:var(--tinta-media);margin-bottom:12px}
-.cve-resumen b{color:var(--tinta)}
-.recargar{background:none;border:1px solid var(--linea);color:var(--tinta-media);font-family:var(--mono);font-size:.68rem;padding:4px 10px;cursor:pointer}
-.recargar:hover{border-color:var(--ambar);color:var(--ambar)}
-.cargando,.error-api{font-family:var(--mono);font-size:.78rem;color:var(--tinta-baja);padding:16px 0}
+.fila-hn a{color:var(--blanco)} .fila-hn a:hover{color:var(--oro)}
+.fila-hn small{display:block;font-size:.74rem;color:var(--gris-2);margin-top:2px}
+.cargando,.error-api{font-size:.85rem;color:var(--gris-2);padding:14px 0}
 .error-api{color:var(--alto)}
 
-/* ---------- servicios / stack / portafolio ---------- */
-.lista-servicios{margin-top:26px;border-top:1px solid var(--linea-suave)}
-.servicio{display:grid;grid-template-columns:240px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--linea-suave)}
-.servicio h3{font-family:var(--cond);font-weight:600;font-size:1.05rem}
-.servicio p{font-size:.9rem;color:var(--tinta-media)}
-.grupo-stack{margin-top:24px}
-.grupo-stack h3{font-family:var(--mono);font-weight:500;font-size:.78rem;color:var(--ambar);margin-bottom:10px}
-.etiquetas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
-.etiquetas span{font-family:var(--mono);font-size:.72rem;border:1px solid var(--linea);padding:4px 9px;color:var(--tinta-media)}
-.caso{border:1px solid var(--linea);background:var(--panel);padding:22px;margin-top:16px}
-.caso .ambito{font-family:var(--mono);font-size:.68rem;color:var(--ambar);margin-bottom:8px}
-.caso h3{font-family:var(--cond);font-weight:600;font-size:1.15rem;margin-bottom:8px}
-.caso p{font-size:.88rem;color:var(--tinta-media)}
-.caso-metricas{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px;font-family:var(--mono);font-size:.75rem;color:var(--tinta-media)}
-.caso-metricas b{color:var(--ambar);font-size:.95rem;display:block}
+/* ================= PANEL NVD ================= */
+.tarjeta-nvd{grid-column:1 / -1;position:relative;overflow:hidden}
+.tarjeta-nvd::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(480px 200px at 8% 0%, rgba(212,175,106,.09), transparent 70%);
+}
+.nvd-resumen{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--panel-borde);border-radius:99px;
+  padding:7px 16px;font-size:.82rem;color:var(--gris);background:rgba(255,255,255,.03);
+}
+.chip b{font-family:var(--mono);color:var(--blanco)}
+.chip .punto{width:8px;height:8px;border-radius:50%}
+.cve-item{
+  display:grid;grid-template-columns:160px 110px 1fr;gap:16px;align-items:start;
+  padding:15px 0;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.cve-item:last-child{border-bottom:0}
+.cve-id a{font-family:var(--mono);font-size:.84rem;font-weight:600;color:var(--blanco)}
+.cve-id a:hover{color:var(--oro)}
+.cve-id time{display:block;font-size:.7rem;color:var(--gris-2);margin-top:3px}
+.sev{
+  font-family:var(--mono);font-size:.68rem;font-weight:600;text-align:center;
+  padding:5px 8px;border-radius:8px;
+}
+.sev-CRITICAL{color:var(--critico);background:rgba(240,86,92,.12)}
+.sev-HIGH{color:var(--alto);background:rgba(245,136,61,.12)}
+.sev-MEDIUM{color:var(--medio);background:rgba(232,197,71,.12)}
+.sev-LOW{color:var(--bajo);background:rgba(78,203,160,.12)}
+.sev-NA{color:var(--gris-2);background:rgba(255,255,255,.05)}
+.cve-desc{font-size:.87rem;color:var(--gris);line-height:1.55}
+.cve-barra{height:4px;border-radius:99px;background:rgba(255,255,255,.07);margin-top:9px;max-width:240px;overflow:hidden}
+.cve-barra i{display:block;height:100%;border-radius:99px}
+.recargar{
+  background:none;border:1px solid var(--panel-borde);color:var(--gris);
+  font-family:var(--sans);font-size:.78rem;padding:6px 16px;border-radius:99px;cursor:pointer;
+  transition:border-color .2s,color .2s;
+}
+.recargar:hover{border-color:var(--oro);color:var(--oro)}
 
-/* ---------- trayectoria ---------- */
-.hito{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--linea-suave)}
-.hito .fecha{font-family:var(--mono);font-size:.75rem;color:var(--tinta-baja);padding-top:3px}
-.hito h3{font-family:var(--cond);font-weight:600;font-size:1rem}
-.hito .lugar{font-family:var(--mono);font-size:.72rem;color:var(--ambar);margin-bottom:5px}
-.hito p{font-size:.87rem;color:var(--tinta-media)}
+/* ================= SERVICIOS ================= */
+.rejilla-servicios{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.servicio{
+  background:var(--panel);border:1px solid var(--panel-borde);border-radius:var(--radio);
+  padding:30px 28px;transition:border-color .25s,transform .25s;
+}
+.servicio:hover{border-color:var(--panel-borde-hover);transform:translateY(-3px)}
+.servicio .icono{
+  width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+  background:var(--oro-brillo);color:var(--oro);font-size:1.15rem;margin-bottom:18px;
+}
+.servicio h3{font-size:1.08rem;font-weight:600;margin-bottom:9px}
+.servicio p{font-size:.9rem;color:var(--gris)}
+.servicio-ancho{grid-column:span 3}
 
-/* ---------- certificaciones ---------- */
-.certs{margin-top:22px;border-top:1px solid var(--linea-suave)}
-.cert{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:13px 0;border-bottom:1px solid var(--linea-suave)}
-.cert b{font-size:.9rem;font-weight:600;display:block}
-.cert span{font-family:var(--mono);font-size:.7rem;color:var(--tinta-baja)}
-.cert a{font-family:var(--mono);font-size:.72rem;border:1px solid var(--linea);padding:5px 12px;white-space:nowrap}
-.cert a:hover{border-color:var(--ambar);text-decoration:none}
+/* ================= CASOS ================= */
+.rejilla-casos{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.caso{
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--panel-borde);border-radius:var(--radio);padding:30px;
+  transition:border-color .25s,transform .25s;
+}
+.caso:hover{border-color:var(--panel-borde-hover);transform:translateY(-3px)}
+.caso .ambito{font-size:.78rem;color:var(--oro);font-weight:600;margin-bottom:10px}
+.caso h3{font-family:var(--serif);font-weight:600;font-size:1.35rem;margin-bottom:10px}
+.caso p{font-size:.9rem;color:var(--gris)}
+.caso-metricas{display:flex;gap:28px;margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.07)}
+.caso-metricas b{display:block;font-family:var(--serif);font-size:1.55rem;color:var(--oro)}
+.caso-metricas span{font-size:.78rem;color:var(--gris)}
 
-/* ---------- pago ---------- */
-.pago-caja{border:1px solid var(--ambar-tenue);background:var(--panel);padding:26px;margin-top:24px;max-width:520px}
-.pago-caja .precio{font-family:var(--mono);font-size:1.7rem;font-weight:600;color:var(--ambar);margin:8px 0 16px}
-.pago-nota{font-family:var(--mono);font-size:.7rem;color:var(--tinta-baja);margin-top:14px;line-height:1.8}
+/* ================= STACK ================= */
+.grupo-stack{margin-bottom:26px}
+.grupo-stack h3{font-size:.86rem;font-weight:600;color:var(--oro);margin-bottom:12px}
+.etiquetas{display:flex;flex-wrap:wrap;gap:8px}
+.etiquetas span{
+  font-size:.82rem;color:var(--gris);border:1px solid var(--panel-borde);
+  border-radius:99px;padding:6px 15px;background:rgba(255,255,255,.02);
+}
 
-/* ---------- pie ---------- */
-footer{padding:44px 48px;font-family:var(--mono);font-size:.72rem;color:var(--tinta-baja);line-height:2}
-footer b{color:var(--tinta-media);font-weight:500}
+/* ================= TRAYECTORIA ================= */
+.linea-tiempo{position:relative;padding-left:30px;max-width:780px}
+.linea-tiempo::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:linear-gradient(var(--oro),rgba(212,175,106,.08))}
+.hito{position:relative;padding:0 0 34px}
+.hito::before{content:"";position:absolute;left:-28px;top:7px;width:11px;height:11px;border-radius:50%;background:var(--noche);border:2px solid var(--oro)}
+.hito .fecha{font-family:var(--mono);font-size:.74rem;color:var(--gris-2)}
+.hito .lugar{font-size:.84rem;color:var(--oro);font-weight:600;margin-top:3px}
+.hito h3{font-size:1.05rem;font-weight:600;margin:3px 0 6px}
+.hito p{font-size:.89rem;color:var(--gris);max-width:64ch}
 
-/* ---------- responsive ---------- */
-@media (max-width:960px){
-  .consola{grid-template-columns:1fr}
-  .riel{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:14px;border-right:0;border-bottom:1px solid var(--linea);padding:18px 22px}
-  .riel nav{flex-direction:row;flex-wrap:wrap;gap:4px;font-size:.78rem}
-  .riel-reloj{margin-left:auto}
-  .riel-pie{display:none}
-  section,.hero,footer{padding-left:22px;padding-right:22px}
-  .tablero{grid-template-columns:1fr}
-  .servicio,.hito{grid-template-columns:1fr;gap:6px}
+/* ================= CERTIFICACIONES ================= */
+.rejilla-certs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cert{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  background:var(--panel);border:1px solid var(--panel-borde);border-radius:14px;
+  padding:18px 22px;transition:border-color .2s;
+}
+.cert:hover{border-color:var(--panel-borde-hover)}
+.cert b{font-size:.92rem;font-weight:600;display:block}
+.cert span{font-size:.76rem;color:var(--gris-2)}
+.cert a{font-size:.8rem;border:1px solid var(--panel-borde);border-radius:99px;padding:7px 16px;white-space:nowrap;transition:border-color .2s}
+.cert a:hover{border-color:var(--oro)}
+
+/* ================= PAGO ================= */
+.seccion-pago{
+  background:
+    radial-gradient(700px 320px at 50% 0%, rgba(212,175,106,.12), transparent 70%),
+    var(--noche-2);
+  border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);
+}
+.pago-caja{
+  max-width:520px;margin:0 auto;text-align:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+  border:1px solid rgba(212,175,106,.35);border-radius:22px;padding:44px 40px;
+  box-shadow:0 24px 70px rgba(0,0,0,.45);
+}
+.pago-caja h3{font-family:var(--serif);font-size:1.5rem;font-weight:600}
+.pago-caja .detalle{color:var(--gris);font-size:.92rem;margin-top:8px}
+.pago-caja .precio{font-family:var(--serif);font-size:3rem;color:var(--oro);margin:22px 0 4px}
+.pago-caja .precio small{font-size:1rem;color:var(--gris)}
+.pago-nota{font-size:.76rem;color:var(--gris-2);margin-top:20px;line-height:1.8}
+
+/* ================= PIE ================= */
+footer{padding:56px 0 44px;text-align:center;color:var(--gris-2);font-size:.82rem;line-height:2}
+footer .logo{display:block;margin-bottom:10px}
+.footer-redes{display:flex;gap:18px;justify-content:center;margin:14px 0}
+.footer-redes a{color:var(--gris)}
+.footer-redes a:hover{color:var(--oro)}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width:920px){
+  .nav-links{display:none}
+  .rejilla-vivo,.rejilla-casos,.rejilla-certs{grid-template-columns:1fr}
+  .rejilla-servicios{grid-template-columns:1fr}
+  .servicio-ancho{grid-column:auto}
   .cve-item{grid-template-columns:1fr;gap:8px}
+  .cifra{min-width:46%;padding:20px 22px}
+  section{padding:64px 0}
+  .hero{padding:80px 0 64px}
 }
 </style>
 </head>
 <body>
-<div class="consola">
 
-<aside class="riel">
-  <div class="riel-marca">UNDERSOFTWARE<small>consola v3 · Santiago, Chile</small></div>
-  <div class="riel-reloj" aria-live="off"><b id="reloj">--:--:--</b>Hora de Santiago</div>
-  <nav aria-label="Navegación principal">
-    <a href="#vivo">Integraciones en vivo</a>
-    <a href="#vulnerabilidades">Vulnerabilidades NVD</a>
-    <a href="#sobre">Sobre Carlos</a>
-    <a href="#servicios">Servicios</a>
-    <a href="#portafolio">Casos reales</a>
-    <a href="#stack">Stack técnico</a>
-    <a href="#trayectoria">Trayectoria</a>
-    <a href="#certificaciones">Certificaciones</a>
-    <a href="#pagos">Reservar sesión</a>
-  </nav>
-  <div class="riel-pie">
-    <span class="punto-ok">●</span> Sitio cifrado · CSP estricta<br>
-    Sin trackers · Ley 21.719<br>
-    RUT 78.411.612-3
+<nav class="navegacion">
+  <div class="contenedor nav-interior">
+    <a class="logo" href="#">Under<em>software</em></a>
+    <div class="nav-links">
+      <a href="#vivo">En vivo</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#casos">Casos</a>
+      <a href="#trayectoria">Trayectoria</a>
+      <a href="#certificaciones">Certificaciones</a>
+    </div>
+    <a class="nav-cta" href="#pagos">Reservar sesión</a>
   </div>
-</aside>
-
-<main>
+</nav>
 
 <header class="hero">
-  <h1>Carlos Oliver<br>Carvajal</h1>
-  <p class="rol">Ingeniero de Software / Líder de Proyectos TI</p>
-  <p class="subrol">Arquitectura, observabilidad transaccional y ciberseguridad para sistemas donde el error no es opción: banca, pagos críticos y cumplimiento normativo chileno.</p>
-  <div class="hero-acciones">
-    <a class="boton boton-ambar" href="#pagos">Reservar sesión</a>
-    <a class="boton" href="https://www.linkedin.com/in/xcarlosmatias/" rel="me noopener" target="_blank">LinkedIn</a>
-    <a class="boton" href="https://github.com/xcarlosmatias" rel="me noopener" target="_blank">GitHub</a>
-    <a class="boton" href="mailto:contacto@undersoftware.cl">Email</a>
-  </div>
-  <div class="hero-estado">
-    <span class="ok">Disponible para consultoría</span>
-    <span>Ley 21.719 · Ley 21.663 · CMF</span>
-    <span id="estado-apis">Conectando 4 fuentes de datos…</span>
+  <div class="contenedor">
+    <span class="hero-eyebrow">Disponible para consultoría · Santiago, Chile</span>
+    <h1>Ingeniería para sistemas donde <span class="dorado">el error no es opción</span></h1>
+    <p class="hero-baja">Carlos Oliver Carvajal — Ingeniero de Software y Líder de Proyectos TI. Arquitectura, observabilidad transaccional y ciberseguridad para banca, pagos críticos y cumplimiento normativo chileno.</p>
+    <div class="hero-botones">
+      <a class="boton-primario" href="#pagos">Agendar una sesión</a>
+      <a class="boton-secundario" href="#vivo">Ver demos en vivo</a>
+    </div>
+    <div class="hero-cifras">
+      <div class="cifra"><b>+10 años</b><span>en sistemas críticos</span></div>
+      <div class="cifra"><b>−68%</b><span>tiempo de detección de incidentes</span></div>
+      <div class="cifra"><b>99,99%</b><span>SLA objetivo en pagos</span></div>
+      <div class="cifra"><b>4 APIs</b><span>en vivo en esta página</span></div>
+    </div>
   </div>
 </header>
 
 <section id="vivo">
-  <div class="marco">
-    <p class="sec-id">01 / integraciones en vivo</p>
-    <h2>Lo que puede construir, funcionando en tu pantalla</h2>
-    <p class="entrada">Cuatro APIs de dominios distintos — moneda local, cripto, tecnología y ciberseguridad — consumidas y renderizadas en este mismo sitio, en tiempo real. El mismo músculo que aplica en clientes de banca y fintech, en chico.</p>
+  <div class="contenedor">
+    <div class="cabecera-seccion centrada">
+      <p class="miga">Demo técnico</p>
+      <h2>Lo que puede construir, funcionando en tu pantalla</h2>
+      <p class="baja">Cuatro integraciones reales — moneda local, cripto, tecnología y ciberseguridad — consumidas y renderizadas en este mismo sitio, en tiempo real. El mismo músculo que aplica en clientes de banca y fintech.</p>
+    </div>
 
-    <div class="tablero">
+    <div class="rejilla-vivo">
 
-      <article class="panel" id="panel-dolar">
-        <div class="panel-cab">
+      <article class="tarjeta">
+        <div class="tarjeta-cab">
           <h3>Dólar observado · USD/CLP</h3>
-          <span class="fuente">mindicador.cl · Banco Central</span>
+          <span class="pill-fuente">mindicador.cl</span>
         </div>
         <div class="dato-grande" id="dolar-valor">$—</div>
         <div class="dato-sub" id="dolar-fecha">cargando…</div>
-        <canvas id="grafico-dolar" width="380" height="56" role="img" aria-label="Serie de 30 días del dólar observado"></canvas>
+        <canvas id="grafico-dolar" width="420" height="60" role="img" aria-label="Serie de 30 días del dólar observado"></canvas>
         <div class="mini-grilla">
-          <div><b id="dolar-min">—</b><span>mín 30d</span></div>
-          <div><b id="dolar-max">—</b><span>máx 30d</span></div>
+          <div><b id="dolar-min">—</b><span>mín 30 días</span></div>
+          <div><b id="dolar-max">—</b><span>máx 30 días</span></div>
           <div><b id="dolar-prom">—</b><span>promedio</span></div>
         </div>
       </article>
 
-      <article class="panel" id="panel-cripto">
-        <div class="panel-cab">
+      <article class="tarjeta">
+        <div class="tarjeta-cab">
           <h3>Mercado cripto en CLP</h3>
-          <span class="fuente">api.coingecko.com</span>
+          <span class="pill-fuente">coingecko.com</span>
         </div>
         <div id="cripto-lista"><p class="cargando">Conectando…</p></div>
-      </article>
-
-      <article class="panel" id="panel-hn" style="grid-column:1 / -1">
-        <div class="panel-cab">
-          <h3>Pulso tecnológico · lo que se discute hoy</h3>
-          <span class="fuente">hn.algolia.com</span>
+        <div class="tarjeta-cab" style="margin:22px 0 6px;border-top:1px solid rgba(255,255,255,.06);padding-top:18px">
+          <h3>Pulso tecnológico</h3>
+          <span class="pill-fuente">hn.algolia.com</span>
         </div>
         <div id="hn-lista"><p class="cargando">Conectando…</p></div>
       </article>
 
+      <article class="tarjeta tarjeta-nvd" id="vulnerabilidades">
+        <div class="tarjeta-cab">
+          <h3>Vulnerabilidades publicadas esta semana · NVD (NIST)</h3>
+          <span class="pill-fuente">services.nvd.nist.gov <button class="recargar" id="cve-recargar" type="button">Actualizar</button></span>
+        </div>
+        <p class="dato-sub" style="margin-bottom:18px">Feed en vivo de la National Vulnerability Database: los CVE de los últimos 7 días con su severidad CVSS. La vigilancia continua que exige la gestión de vulnerabilidades bajo la Ley 21.663 y la CMF.</p>
+        <div class="nvd-resumen" id="cve-resumen"></div>
+        <div id="cve-lista"><p class="cargando">Consultando NVD… esta API tarda unos segundos.</p></div>
+      </article>
+
     </div>
   </div>
 </section>
 
-<section id="vulnerabilidades">
-  <div class="marco">
-    <p class="sec-id">02 / tablero de vulnerabilidades</p>
-    <h2>Vulnerabilidades publicadas esta semana, en vivo desde NVD</h2>
-    <p class="entrada">Feed directo de la National Vulnerability Database (NIST): los CVE publicados en los últimos 7 días, con su severidad CVSS. La misma vigilancia continua que exige la gestión de vulnerabilidades bajo la Ley 21.663 y los lineamientos de la CMF.</p>
+<section id="servicios" style="background:var(--noche-2);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)">
+  <div class="contenedor">
+    <div class="cabecera-seccion">
+      <p class="miga">Servicios</p>
+      <h2>Cinco frentes donde aporta valor</h2>
+      <p class="baja">No vende horas, aporta criterio: el de quien escaló de NOC en redes MPLS a líder de proyectos de observabilidad transaccional en uno de los bancos más grandes de Chile.</p>
+    </div>
+    <div class="rejilla-servicios">
+      <div class="servicio"><div class="icono">◆</div><h3>Arquitectura de software</h3><p>Sistemas distribuidos, microservicios y APIs bajo principios SOLID, DDD y patrones cloud-native.</p></div>
+      <div class="servicio"><div class="icono">◉</div><h3>Observabilidad transaccional</h3><p>Monitoreo end-to-end (logs, métricas, traces) específico para banca y pagos críticos.</p></div>
+      <div class="servicio"><div class="icono">✦</div><h3>Ciberseguridad y cumplimiento</h3><p>Hardening, gestión de vulnerabilidades CVE y alineamiento con la Ley 21.719 y la Ley 21.663.</p></div>
+      <div class="servicio"><div class="icono">▲</div><h3>Liderazgo de proyectos TI</h3><p>Dirección end-to-end bajo PMI, ITIL y Agile. Coordinación de equipos técnicos en proyectos críticos.</p></div>
+      <div class="servicio" style="grid-column:span 2"><div class="icono">$</div><h3>Integración de medios de pago</h3><p>Botones de pago y checkout (Flow, Webpay, transferencia) con conciliación y boleta electrónica, respaldado por años operando pagos críticos en banca: SWIFT, LBTR, pagos masivos y canales H2H/B2B. <a href="#pagos">Verlo en vivo en esta página</a>.</p></div>
+    </div>
+  </div>
+</section>
 
-    <div class="tablero">
-      <article class="panel panel-cve">
-        <div class="panel-cab">
-          <h3>Feed CVE · últimos 7 días</h3>
-          <span class="fuente">services.nvd.nist.gov · API 2.0 <button class="recargar" id="cve-recargar" type="button">recargar</button></span>
-        </div>
-        <div class="cve-resumen" id="cve-resumen"></div>
-        <div class="cve-lista" id="cve-lista"><p class="cargando">Consultando NVD… esta API tarda unos segundos.</p></div>
+<section id="casos">
+  <div class="contenedor">
+    <div class="cabecera-seccion">
+      <p class="miga">Casos reales</p>
+      <h2>Lo que ha construido</h2>
+      <p class="baja">Selección de proyectos donde ha liderado o aportado en el diseño, la implementación y la operación.</p>
+    </div>
+    <div class="rejilla-casos">
+      <article class="caso">
+        <p class="ambito">Banca · Observabilidad</p>
+        <h3>Observabilidad transaccional end-to-end</h3>
+        <p>Monitoreo transaccional sobre flujos críticos de pagos en uno de los bancos más grandes de Chile. Trazabilidad desde el canal hasta el core bancario. Dynatrace, Splunk, OpenTelemetry, Kafka.</p>
+        <div class="caso-metricas"><div><b>−68%</b><span>tiempo de detección</span></div><div><b>24×7</b><span>operación NOC</span></div></div>
+      </article>
+      <article class="caso">
+        <p class="ambito">Arquitectura · Cloud</p>
+        <h3>Microservicios para pagos</h3>
+        <p>Arquitectura distribuida resiliente: circuit breaker, saga, idempotencia y eventual consistency, documentada bajo el estándar C4. Kubernetes, Istio, PostgreSQL, Redis.</p>
+        <div class="caso-metricas"><div><b>99,99%</b><span>SLA objetivo</span></div><div><b>&lt;200 ms</b><span>latencia P99</span></div></div>
+      </article>
+      <article class="caso">
+        <p class="ambito">Cumplimiento · Ley 21.719</p>
+        <h3>Adecuación a la Ley de Protección de Datos</h3>
+        <p>Alineamiento de sistemas legacy: mapeo de datos personales, consentimiento, cifrado en reposo, derecho al olvido y bitácoras de acceso. Vault, AES-256, RBAC.</p>
+        <div class="caso-metricas"><div><b>100%</b><span>datos cifrados</span></div><div><b>Total</b><span>trazabilidad</span></div></div>
+      </article>
+      <article class="caso">
+        <p class="ambito">Ciberseguridad · Hardening</p>
+        <h3>Hardening de infraestructura crítica</h3>
+        <p>Superficie de ataque, gestión de vulnerabilidades CVE, segmentación de red y baseline CIS sobre clúster productivo, alineado con la Ley 21.663 y exigencias CMF. Trivy, Falco, WAF.</p>
+        <div class="caso-metricas"><div><b>0</b><span>CVE críticas</span></div><div><b>SOC 2</b><span>ready</span></div></div>
       </article>
     </div>
   </div>
 </section>
 
-<section id="sobre">
-  <div class="marco">
-    <p class="sec-id">03 / sobre carlos</p>
-    <h2>Aporta valor donde el error no es opción</h2>
-    <p class="entrada">Años diseñando, liderando y operando la maquinaria invisible que sostiene los pagos críticos de la banca chilena. Su trabajo vive en la intersección entre arquitectura, observabilidad y cumplimiento normativo: ese punto donde un sistema sostiene un negocio en lugar de ponerlo en riesgo legal o reputacional.</p>
-    <p class="entrada" style="margin-top:14px">Trabaja bajo buenas prácticas de ingeniería — diseño limpio, principios SOLID, infraestructura como código — y bajo el marco regulatorio chileno: Ley 21.719 de protección de datos personales, Ley 21.663 de ciberseguridad y los lineamientos de la CMF para el sector financiero.</p>
-    <p class="entrada" style="margin-top:14px">No vende horas, aporta criterio: el de quien escaló de NOC en redes MPLS a líder de proyectos de observabilidad transaccional en uno de los bancos más grandes de Chile.</p>
-  </div>
-</section>
-
-<section id="servicios">
-  <div class="marco">
-    <p class="sec-id">04 / servicios</p>
-    <h2>Cinco frentes donde aporta</h2>
-    <div class="lista-servicios">
-      <div class="servicio"><h3>Arquitectura de software</h3><p>Diseño de sistemas distribuidos, microservicios y APIs bajo principios SOLID, DDD y patrones cloud-native.</p></div>
-      <div class="servicio"><h3>Observabilidad transaccional</h3><p>Monitoreo end-to-end (logs, métricas, traces) específico para banca y pagos críticos.</p></div>
-      <div class="servicio"><h3>Ciberseguridad y cumplimiento</h3><p>Hardening, gestión de vulnerabilidades CVE y alineamiento con la Ley 21.719 y la Ley 21.663.</p></div>
-      <div class="servicio"><h3>Liderazgo de proyectos TI</h3><p>Dirección end-to-end bajo PMI, ITIL y Agile. Coordinación de equipos técnicos en proyectos críticos.</p></div>
-      <div class="servicio"><h3>Integración de medios de pago</h3><p>Botones de pago y checkout (Flow, Webpay, transferencia) con conciliación y boleta electrónica. Respaldado por años operando pagos críticos en banca: SWIFT, LBTR, pagos masivos y canales H2H/B2B. <a href="#pagos">Verlo en vivo en esta página</a>.</p></div>
+<section id="stack" style="background:var(--noche-2);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)">
+  <div class="contenedor">
+    <div class="cabecera-seccion">
+      <p class="miga">Stack técnico</p>
+      <h2>Las herramientas detrás del criterio</h2>
+      <p class="baja">Stack consolidado en producción real: banca, telecomunicaciones y data centers.</p>
     </div>
-  </div>
-</section>
-
-<section id="portafolio">
-  <div class="marco">
-    <p class="sec-id">05 / casos reales</p>
-    <h2>Lo que ha construido</h2>
-    <p class="entrada">Selección de proyectos donde ha liderado o aportado en el diseño, la implementación y la operación.</p>
-
-    <article class="caso">
-      <p class="ambito">Banca · Observabilidad</p>
-      <h3>Observabilidad transaccional end-to-end</h3>
-      <p>Monitoreo transaccional sobre flujos críticos de pagos en uno de los bancos más grandes de Chile. Trazabilidad de cada transacción desde el canal hasta el core bancario. Dynatrace, Splunk, OpenTelemetry, Kafka.</p>
-      <div class="caso-metricas"><span><b>−68%</b>tiempo de detección</span><span><b>24×7</b>operación NOC</span></div>
-    </article>
-
-    <article class="caso">
-      <p class="ambito">Arquitectura · Cloud</p>
-      <h3>Microservicios para pagos</h3>
-      <p>Arquitectura distribuida resiliente para procesamiento de pagos: circuit breaker, saga, idempotencia y eventual consistency, documentada bajo el estándar C4. Kubernetes, Istio, PostgreSQL, Redis.</p>
-      <div class="caso-metricas"><span><b>99,99%</b>SLA objetivo</span><span><b>&lt;200 ms</b>latencia P99</span></div>
-    </article>
-
-    <article class="caso">
-      <p class="ambito">Cumplimiento · Ley 21.719</p>
-      <h3>Adecuación a la Ley de Protección de Datos</h3>
-      <p>Alineamiento de sistemas legacy con la Ley 21.719: mapeo de datos personales, consentimiento, cifrado en reposo, derecho al olvido y bitácoras de acceso. Vault, AES-256, RBAC, audit log.</p>
-      <div class="caso-metricas"><span><b>100%</b>datos cifrados</span><span><b>Total</b>trazabilidad</span></div>
-    </article>
-
-    <article class="caso">
-      <p class="ambito">Ciberseguridad · Hardening</p>
-      <h3>Hardening de infraestructura crítica</h3>
-      <p>Revisión de superficie de ataque, gestión de vulnerabilidades CVE, segmentación de red y baseline CIS sobre clúster productivo, alineado con la Ley 21.663 y exigencias CMF. Trivy, Falco, WAF.</p>
-      <div class="caso-metricas"><span><b>0</b>CVE críticas</span><span><b>SOC 2</b>ready</span></div>
-    </article>
-  </div>
-</section>
-
-<section id="stack">
-  <div class="marco">
-    <p class="sec-id">06 / stack técnico</p>
-    <h2>Las herramientas detrás del criterio</h2>
-    <p class="entrada">Stack consolidado en producción real: banca, telecomunicaciones y data centers.</p>
-    <div class="grupo-stack">
-      <h3>Gestión y liderazgo</h3>
-      <div class="etiquetas"><span>PMI · Clarity</span><span>ITIL 4</span><span>Agile · Scrum</span><span>JIRA</span><span>Confluence</span><span>Stakeholders</span></div>
-      <h3>Software y datos</h3>
-      <div class="etiquetas"><span>SQL</span><span>PostgreSQL</span><span>MongoDB</span><span>SQL Server</span><span>Sybase</span><span>Redis</span><span>Databricks · IA</span><span>Kafka</span><span>Power BI</span><span>Unix</span><span>Git</span><span>C#</span><span>PHP</span></div>
-      <h3>Infraestructura y monitoreo</h3>
-      <div class="etiquetas"><span>Nagios</span><span>Control-M</span><span>SolarWinds</span><span>Redes MPLS</span><span>ANSI-TIA 942</span><span>Windows Server</span><span>ITSM</span></div>
-      <h3>Banca y pagos</h3>
-      <div class="etiquetas"><span>SWIFT MT101/103/940</span><span>LBTR</span><span>Pagos masivos</span><span>PNOL · ODP</span><span>NSP</span><span>H2H · B2B</span><span>Web Services · APIs</span><span>Flow · Webpay</span><span>Cash Management</span></div>
-    </div>
+    <div class="grupo-stack"><h3>Gestión y liderazgo</h3><div class="etiquetas"><span>PMI · Clarity</span><span>ITIL 4</span><span>Agile · Scrum</span><span>JIRA</span><span>Confluence</span><span>Stakeholders</span></div></div>
+    <div class="grupo-stack"><h3>Software y datos</h3><div class="etiquetas"><span>SQL</span><span>PostgreSQL</span><span>MongoDB</span><span>SQL Server</span><span>Sybase</span><span>Redis</span><span>Databricks · IA</span><span>Kafka</span><span>Power BI</span><span>Unix</span><span>Git</span><span>C#</span><span>PHP</span></div></div>
+    <div class="grupo-stack"><h3>Infraestructura y monitoreo</h3><div class="etiquetas"><span>Nagios</span><span>Control-M</span><span>SolarWinds</span><span>Redes MPLS</span><span>ANSI-TIA 942</span><span>Windows Server</span><span>ITSM</span></div></div>
+    <div class="grupo-stack" style="margin-bottom:0"><h3>Banca y pagos</h3><div class="etiquetas"><span>SWIFT MT101/103/940</span><span>LBTR</span><span>Pagos masivos</span><span>PNOL · ODP</span><span>NSP</span><span>H2H · B2B</span><span>Web Services · APIs</span><span>Flow · Webpay</span><span>Cash Management</span></div></div>
   </div>
 </section>
 
 <section id="trayectoria">
-  <div class="marco">
-    <p class="sec-id">07 / trayectoria</p>
-    <h2>Más de una década en sistemas críticos</h2>
-    <p class="entrada">Del NOC al liderazgo de proyectos en uno de los bancos más grandes de Chile. 8 años de progresión interna en Banca Empresa (Wholesale) del BCI.</p>
-
-    <div class="hito"><div class="fecha">11/2023 — hoy</div><div><p class="lugar">Banco de Crédito e Inversiones · BCI</p><h3>Ingeniero de Software</h3><p>Lidera proyectos de observabilidad transaccional end-to-end sobre flujos de pago críticos (LBTR, SWIFT, pagos masivos, NSP). Redujo el tiempo de detección de incidentes coordinando Arquitectura, Data Engineering y PMO. Especialista N2 en turnos 24×7.</p></div></div>
-    <div class="hito"><div class="fecha">11/2022 — 11/2023</div><div><p class="lugar">BCI</p><h3>Ingeniero Onboarding Empresa</h3><p>Lideró la integración de soluciones de pago entre el banco y clientes Wholesale, articulando soporte N0–N2 y proveedores externos.</p></div></div>
-    <div class="hito"><div class="fecha">10/2021 — 10/2022</div><div><p class="lugar">BCI</p><h3>Ingeniero de Experiencia y Servicios TI</h3><p>Dirección de equipos multidisciplinarios para entrega de valor estratégico y gestión de incidentes críticos.</p></div></div>
-    <div class="hito"><div class="fecha">10/2018 — 10/2021</div><div><p class="lugar">BCI</p><h3>Técnico Banca Transaccional · Cash Management</h3><p>Gestión de canales H2H/B2B, administración de Sage XRT Business Exchange y desarrollo en C#, PHP y scripts.</p></div></div>
-    <div class="hito"><div class="fecha">07/2018 — 10/2018</div><div><p class="lugar">Fractalia Remote Systems</p><h3>Especialista en Monitoreo N2 · NOC</h3><p>Administración de redes MPLS para Telefónica Chile bajo marco ITIL.</p></div></div>
-    <div class="hito"><div class="fecha">08/2017 — 05/2018</div><div><p class="lugar">Alternattiva · Telefónica Empresas</p><h3>Ingeniero Senior Commodities</h3><p>Arquitectura técnica en data centers bajo la norma ANSI-TIA 942.</p></div></div>
-    <div class="hito"><div class="fecha">11/2016 — 06/2017</div><div><p class="lugar">Hewlett-Packard Enterprise · SSI</p><h3>Consultor de Gestión de Data Center</h3><p>Operaciones de infraestructura física bajo metodología ITIL y HPSM.</p></div></div>
-    <div class="hito"><div class="fecha">12/2013 — 04/2015</div><div><p class="lugar">Selkis S.A.</p><h3>Especialista en Monitoreo N1 · NOC</h3><p>Supervisión de redes MPLS, troubleshooting y gestión de tickets en Remedy.</p></div></div>
-    <div class="hito"><div class="fecha">2021 — 2023</div><div><p class="lugar">Universidad Central</p><h3>Magíster en Dirección de Proyectos Informáticos</h3><p>Diplomados en Gestión de Proyectos, Análisis de Datos y Gestión de Innovación.</p></div></div>
-    <div class="hito"><div class="fecha">2012 — 2017</div><div><p class="lugar">Instituto Profesional de Chile</p><h3>Ingeniería en Redes y Comunicaciones</h3><p>Técnico de Nivel Superior en Conectividad y Redes.</p></div></div>
+  <div class="contenedor">
+    <div class="cabecera-seccion">
+      <p class="miga">Trayectoria</p>
+      <h2>Más de una década en sistemas críticos</h2>
+      <p class="baja">Del NOC al liderazgo de proyectos. 8 años de progresión interna en Banca Empresa (Wholesale) del BCI.</p>
+    </div>
+    <div class="linea-tiempo">
+      <div class="hito"><p class="fecha">11/2023 — hoy</p><p class="lugar">Banco de Crédito e Inversiones · BCI</p><h3>Ingeniero de Software</h3><p>Lidera proyectos de observabilidad transaccional end-to-end sobre flujos de pago críticos (LBTR, SWIFT, pagos masivos, NSP). Redujo el tiempo de detección de incidentes coordinando Arquitectura, Data Engineering y PMO. Especialista N2 en turnos 24×7.</p></div>
+      <div class="hito"><p class="fecha">11/2022 — 11/2023</p><p class="lugar">BCI</p><h3>Ingeniero Onboarding Empresa</h3><p>Lideró la integración de soluciones de pago entre el banco y clientes Wholesale, articulando soporte N0–N2 y proveedores externos.</p></div>
+      <div class="hito"><p class="fecha">10/2021 — 10/2022</p><p class="lugar">BCI</p><h3>Ingeniero de Experiencia y Servicios TI</h3><p>Dirección de equipos multidisciplinarios para entrega de valor estratégico y gestión de incidentes críticos.</p></div>
+      <div class="hito"><p class="fecha">10/2018 — 10/2021</p><p class="lugar">BCI</p><h3>Técnico Banca Transaccional · Cash Management</h3><p>Gestión de canales H2H/B2B, administración de Sage XRT Business Exchange y desarrollo en C#, PHP y scripts.</p></div>
+      <div class="hito"><p class="fecha">07/2018 — 10/2018</p><p class="lugar">Fractalia Remote Systems</p><h3>Especialista en Monitoreo N2 · NOC</h3><p>Administración de redes MPLS para Telefónica Chile bajo marco ITIL.</p></div>
+      <div class="hito"><p class="fecha">08/2017 — 05/2018</p><p class="lugar">Alternattiva · Telefónica Empresas</p><h3>Ingeniero Senior Commodities</h3><p>Arquitectura técnica en data centers bajo la norma ANSI-TIA 942.</p></div>
+      <div class="hito"><p class="fecha">11/2016 — 06/2017</p><p class="lugar">Hewlett-Packard Enterprise · SSI</p><h3>Consultor de Gestión de Data Center</h3><p>Operaciones de infraestructura física bajo metodología ITIL y HPSM.</p></div>
+      <div class="hito"><p class="fecha">12/2013 — 04/2015</p><p class="lugar">Selkis S.A.</p><h3>Especialista en Monitoreo N1 · NOC</h3><p>Supervisión de redes MPLS, troubleshooting y gestión de tickets en Remedy.</p></div>
+      <div class="hito"><p class="fecha">2021 — 2023</p><p class="lugar">Universidad Central</p><h3>Magíster en Dirección de Proyectos Informáticos</h3><p>Diplomados en Gestión de Proyectos, Análisis de Datos y Gestión de Innovación.</p></div>
+      <div class="hito" style="padding-bottom:0"><p class="fecha">2012 — 2017</p><p class="lugar">Instituto Profesional de Chile</p><h3>Ingeniería en Redes y Comunicaciones</h3><p>Técnico de Nivel Superior en Conectividad y Redes.</p></div>
+    </div>
   </div>
 </section>
 
-<section id="certificaciones">
-  <div class="marco">
-    <p class="sec-id">08 / certificaciones</p>
-    <h2>Formación certificada, verificable al instante</h2>
-    <p class="entrada">Cada credencial enlaza a la verificación oficial del organismo emisor.</p>
-    <div class="certs">
+<section id="certificaciones" style="background:var(--noche-2);border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05)">
+  <div class="contenedor">
+    <div class="cabecera-seccion">
+      <p class="miga">Certificaciones</p>
+      <h2>Formación certificada, verificable al instante</h2>
+      <p class="baja">Cada credencial enlaza a la verificación oficial del organismo emisor.</p>
+    </div>
+    <div class="rejilla-certs">
       <div class="cert"><div><b>ITIL 4 Foundation · IT Service Management</b><span>PeopleCert · AXELOS · N° GR671665057CO · vigente 2027</span></div></div>
       <div class="cert"><div><b>Azure Data Fundamentals · DP-900</b><span>Microsoft Certified</span></div><a href="https://learn.microsoft.com/api/credentials/share/es-mx/CARLOSOLIVERCARVAJAL-8514/1443C03B0B7A666E" target="_blank" rel="noopener">Verificar</a></div>
       <div class="cert"><div><b>Databricks Fundamentals</b><span>Databricks Academy · Lakehouse e IA</span></div><a href="https://credentials.databricks.com/48b1e91c-f13a-4c45-bcfd-f087b9637e8b#acc.xk6epAiC" target="_blank" rel="noopener">Verificar</a></div>
@@ -433,68 +497,59 @@ footer b{color:var(--tinta-media);font-weight:500}
   </div>
 </section>
 
-<section id="pagos">
-  <div class="marco">
-    <p class="sec-id">09 / reservar sesión</p>
-    <h2>Agenda una sesión</h2>
-    <p class="entrada">Pago procesado por Flow — Webpay, tarjetas o transferencia. Tu información de pago nunca toca este sitio.</p>
+<section id="pagos" class="seccion-pago">
+  <div class="contenedor">
+    <div class="cabecera-seccion centrada">
+      <p class="miga">Reservar sesión</p>
+      <h2>Agenda una sesión de diagnóstico</h2>
+      <p class="baja">Pago procesado por Flow — Webpay, tarjetas o transferencia. Tu información de pago nunca toca este sitio.</p>
+    </div>
     <div class="pago-caja">
-      <h3 style="font-family:var(--cond);font-weight:600">Sesión de diagnóstico · 60 minutos</h3>
-      <p style="font-size:.87rem;color:var(--tinta-media)">Análisis técnico de un caso puntual.</p>
-      <p class="precio">$50.000 CLP</p>
-      <a class="boton boton-ambar" href="https://www.flow.cl/btn.php?token=r2213e0de9634090c9429ff0052a25c4a6aaa665" rel="noopener">Pagar con Flow</a>
-      <p class="pago-nota">Procesado por Flow · Webpay, tarjetas y transferencia · Boleta electrónica.<br>Este botón también es una demo en producción: la <a href="#servicios">integración de medios de pago</a> es uno de los servicios que Carlos implementa para sus clientes.</p>
+      <h3>Sesión de diagnóstico · 60 minutos</h3>
+      <p class="detalle">Análisis técnico de un caso puntual, con recomendaciones accionables.</p>
+      <p class="precio">$50.000 <small>CLP</small></p>
+      <a class="boton-primario" href="https://www.flow.cl/btn.php?token=r2213e0de9634090c9429ff0052a25c4a6aaa665" rel="noopener">Pagar con Flow</a>
+      <p class="pago-nota">Procesado por Flow · Webpay, tarjetas y transferencia · Boleta electrónica.<br>Este botón también es una demo en producción: la integración de medios de pago es uno de los servicios que Carlos implementa para sus clientes.</p>
     </div>
   </div>
 </section>
 
 <footer>
-  <b>UNDERSOFTWARE SPA</b> · RUT 78.411.612-3<br>
-  Desarrollo de software · Consultoría TI · Gestión de proyectos<br>
-  Arquitectura · Observabilidad · Ciberseguridad<br>
-  SII Chile · Boleta y factura electrónica · © 2026 · undersoftware.cl
+  <div class="contenedor">
+    <span class="logo">Under<em>software</em></span>
+    UNDERSOFTWARE SPA · RUT 78.411.612-3<br>
+    Desarrollo de software · Consultoría TI · Gestión de proyectos
+    <div class="footer-redes">
+      <a href="https://www.linkedin.com/in/xcarlosmatias/" rel="me noopener" target="_blank">LinkedIn</a>
+      <a href="https://github.com/xcarlosmatias" rel="me noopener" target="_blank">GitHub</a>
+      <a href="mailto:contacto@undersoftware.cl">Email</a>
+    </div>
+    Sitio cifrado · CSP estricta · Sin trackers · Cumple Ley 21.719<br>
+    SII Chile · Boleta y factura electrónica · © 2026 · undersoftware.cl
+  </div>
 </footer>
-
-</main>
-</div>
 <script>
 "use strict";
-/* ============ utilidades ============ */
 const $ = s => document.querySelector(s);
 const clp = n => "$" + Math.round(n).toLocaleString("es-CL");
-let apisOk = 0, apisTotal = 4;
-function marcarApi(ok){
-  if (ok) apisOk++;
-  apisTotal--;
-  const restantes = apisTotal;
-  if (restantes <= 0) $("#estado-apis").textContent = apisOk + "/4 fuentes de datos en línea";
-}
 
-/* ============ reloj de Santiago ============ */
-function tictac(){
-  $("#reloj").textContent = new Date().toLocaleTimeString("es-CL",{timeZone:"America/Santiago",hour12:false});
-}
-tictac(); setInterval(tictac, 1000);
-
-/* ============ 1) Dólar observado · mindicador.cl ============ */
+/* ===== 1) Dólar observado · mindicador.cl ===== */
 async function cargarDolar(){
   try{
     const r = await fetch("https://mindicador.cl/api/dolar");
     if (!r.ok) throw new Error(r.status);
     const d = await r.json();
-    const serie = d.serie.slice(0, 30).reverse(); // más antiguo → más nuevo
+    const serie = d.serie.slice(0, 30).reverse();
     const valores = serie.map(p => p.valor);
     const ultimo = serie[serie.length - 1];
     $("#dolar-valor").textContent = clp(ultimo.valor);
-    $("#dolar-fecha").textContent = "al " + new Date(ultimo.fecha).toLocaleDateString("es-CL") + " · " + serie.length + " puntos";
+    $("#dolar-fecha").textContent = "Banco Central · al " + new Date(ultimo.fecha).toLocaleDateString("es-CL");
     $("#dolar-min").textContent  = clp(Math.min(...valores));
     $("#dolar-max").textContent  = clp(Math.max(...valores));
     $("#dolar-prom").textContent = clp(valores.reduce((a,b)=>a+b,0) / valores.length);
     dibujarSerie(valores);
-    marcarApi(true);
   }catch(e){
     $("#dolar-fecha").textContent = "No se pudo conectar con mindicador.cl — reintenta más tarde.";
-    marcarApi(false);
   }
 }
 function dibujarSerie(v){
@@ -505,14 +560,23 @@ function dibujarSerie(v){
   const min = Math.min(...v), max = Math.max(...v), rango = (max - min) || 1;
   const x = i => (i / (v.length - 1)) * (w - 4) + 2;
   const y = val => h - 4 - ((val - min) / rango) * (h - 8);
-  ctx.strokeStyle = "#F5A623"; ctx.lineWidth = 1.5; ctx.beginPath();
+  // relleno degradado bajo la curva
+  const grad = ctx.createLinearGradient(0, 0, 0, h);
+  grad.addColorStop(0, "rgba(212,175,106,.28)");
+  grad.addColorStop(1, "rgba(212,175,106,0)");
+  ctx.beginPath();
+  v.forEach((val, i) => i ? ctx.lineTo(x(i), y(val)) : ctx.moveTo(x(i), y(val)));
+  ctx.lineTo(x(v.length - 1), h); ctx.lineTo(x(0), h); ctx.closePath();
+  ctx.fillStyle = grad; ctx.fill();
+  // línea
+  ctx.strokeStyle = "#D4AF6A"; ctx.lineWidth = 2; ctx.lineJoin = "round"; ctx.beginPath();
   v.forEach((val, i) => i ? ctx.lineTo(x(i), y(val)) : ctx.moveTo(x(i), y(val)));
   ctx.stroke();
-  ctx.fillStyle = "#F5A623";
-  ctx.beginPath(); ctx.arc(x(v.length - 1), y(v[v.length - 1]), 2.5, 0, 7); ctx.fill();
+  ctx.fillStyle = "#E8CD96";
+  ctx.beginPath(); ctx.arc(x(v.length - 1), y(v[v.length - 1]), 3, 0, 7); ctx.fill();
 }
 
-/* ============ 2) Cripto en CLP · CoinGecko ============ */
+/* ===== 2) Cripto en CLP · CoinGecko ===== */
 async function cargarCripto(){
   const caja = $("#cripto-lista");
   try{
@@ -520,26 +584,24 @@ async function cargarCripto(){
     if (!r.ok) throw new Error(r.status);
     const datos = await r.json();
     caja.innerHTML = datos.map(m => {
-      const var24 = m.price_change_percentage_24h ?? 0;
-      const clase = var24 >= 0 ? "sube" : "baja";
-      const signo = var24 >= 0 ? "▲" : "▼";
+      const v = m.price_change_percentage_24h ?? 0;
+      const clase = v >= 0 ? "sube" : "baja-pct";
+      const signo = v >= 0 ? "▲" : "▼";
       return `<div class="fila-activo">
-        <span>${m.symbol.toUpperCase()} · ${m.name}</span>
-        <span>${clp(m.current_price)} <span class="${clase}">${signo} ${Math.abs(var24).toFixed(2)}%</span></span>
+        <span>${m.name} <span style="color:var(--gris-2)">· ${m.symbol.toUpperCase()}</span></span>
+        <span class="precio">${clp(m.current_price)} <span class="${clase}">${signo} ${Math.abs(v).toFixed(2)}%</span></span>
       </div>`;
     }).join("");
-    marcarApi(true);
   }catch(e){
     caja.innerHTML = '<p class="error-api">CoinGecko no respondió (límite de consultas). Reintenta en un minuto.</p>';
-    marcarApi(false);
   }
 }
 
-/* ============ 3) Pulso tecnológico · Hacker News (Algolia) ============ */
+/* ===== 3) Pulso tecnológico · Hacker News (Algolia) ===== */
 async function cargarHN(){
   const caja = $("#hn-lista");
   try{
-    const r = await fetch("https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=4");
+    const r = await fetch("https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=3");
     if (!r.ok) throw new Error(r.status);
     const d = await r.json();
     caja.innerHTML = d.hits.map(h => `
@@ -547,25 +609,24 @@ async function cargarHN(){
         <a href="${h.url || "https://news.ycombinator.com/item?id=" + h.objectID}" target="_blank" rel="noopener">${h.title}</a>
         <small>${h.points} puntos · ${h.num_comments} comentarios</small>
       </div>`).join("");
-    marcarApi(true);
   }catch(e){
     caja.innerHTML = '<p class="error-api">No se pudo conectar con hn.algolia.com.</p>';
-    marcarApi(false);
   }
 }
 
-/* ============ 4) Vulnerabilidades · NVD API 2.0 (NIST) ============ */
+/* ===== 4) Vulnerabilidades · NVD API 2.0 (NIST) ===== */
 const SEV_TXT = { CRITICAL:"CRÍTICA", HIGH:"ALTA", MEDIUM:"MEDIA", LOW:"BAJA", NA:"EN ANÁLISIS" };
-const SEV_COLOR = { CRITICAL:"var(--critico)", HIGH:"var(--alto)", MEDIUM:"var(--medio)", LOW:"var(--bajo)", NA:"var(--linea)" };
+const SEV_CSS = { CRITICAL:"var(--critico)", HIGH:"var(--alto)", MEDIUM:"var(--medio)", LOW:"var(--bajo)", NA:"var(--gris-2)" };
 
-function fechaNVD(d){ // formato exigido: YYYY-MM-DDTHH:MM:SS.000
-  return d.toISOString().slice(0, 19) + ".000";
-}
+const fechaNVD = d => d.toISOString().slice(0, 19) + ".000"; // YYYY-MM-DDTHH:MM:SS.000
 function severidadDe(cve){
   const m = cve.metrics || {};
   const v = (m.cvssMetricV40 || m.cvssMetricV31 || m.cvssMetricV30 || [])[0];
-  if (v && v.cvssData) return { sev: (v.cvssData.baseSeverity || "NA").toUpperCase(), score: v.cvssData.baseScore };
-  return { sev: "NA", score: null };
+  if (v && v.cvssData) return { sev:(v.cvssData.baseSeverity || "NA").toUpperCase(), score:v.cvssData.baseScore };
+  return { sev:"NA", score:null };
+}
+function escapar(t){
+  return t.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 
 async function cargarCVE(){
@@ -579,7 +640,7 @@ async function cargarCVE(){
       + "?pubStartDate=" + encodeURIComponent(fechaNVD(desde))
       + "&pubEndDate="   + encodeURIComponent(fechaNVD(hasta))
       + "&resultsPerPage=120";
-    const r = await fetch(url, { headers: { "Accept": "application/json" } });
+    const r = await fetch(url, { headers:{ "Accept":"application/json" } });
     if (r.status === 403 || r.status === 429) throw new Error("limite");
     if (!r.ok) throw new Error(r.status);
     const d = await r.json();
@@ -591,24 +652,22 @@ async function cargarCVE(){
         const { sev, score } = severidadDe(c);
         const descES = (c.descriptions || []).find(x => x.lang === "es");
         const descEN = (c.descriptions || []).find(x => x.lang === "en");
-        return { id: c.id, pub: c.published, sev, score, desc: (descES || descEN || {}).value || "Sin descripción disponible." };
-      })
-      .sort((a, b) => new Date(b.pub) - new Date(a.pub));
+        return { id:c.id, pub:c.published, sev, score, desc:(descES || descEN || {}).value || "Sin descripción disponible." };
+      });
 
-    // resumen por severidad sobre todo lo publicado en la semana
     const conteo = { CRITICAL:0, HIGH:0, MEDIUM:0, LOW:0, NA:0 };
     items.forEach(i => conteo[i.sev]++);
     resumen.innerHTML =
-      `<span><b>${(d.totalResults || items.length).toLocaleString("es-CL")}</b> CVE publicados en 7 días</span>` +
-      `<span style="color:var(--critico)"><b>${conteo.CRITICAL}</b> críticas</span>` +
-      `<span style="color:var(--alto)"><b>${conteo.HIGH}</b> altas</span>` +
-      `<span style="color:var(--medio)"><b>${conteo.MEDIUM}</b> medias</span>` +
-      `<span><b>${conteo.NA}</b> en análisis</span>` +
-      `<span>(muestra de ${items.length})</span>`;
+      `<span class="chip"><b>${(d.totalResults || items.length).toLocaleString("es-CL")}</b> CVE en 7 días</span>` +
+      `<span class="chip"><span class="punto" style="background:var(--critico)"></span><b>${conteo.CRITICAL}</b> críticas</span>` +
+      `<span class="chip"><span class="punto" style="background:var(--alto)"></span><b>${conteo.HIGH}</b> altas</span>` +
+      `<span class="chip"><span class="punto" style="background:var(--medio)"></span><b>${conteo.MEDIUM}</b> medias</span>` +
+      `<span class="chip"><b>${conteo.NA}</b> en análisis</span>`;
 
-    // priorizar las más severas y recientes en pantalla
     const orden = { CRITICAL:0, HIGH:1, MEDIUM:2, LOW:3, NA:4 };
-    const top = items.sort((a,b) => (orden[a.sev] - orden[b.sev]) || (new Date(b.pub) - new Date(a.pub))).slice(0, 8);
+    const top = items
+      .sort((a,b) => (orden[a.sev] - orden[b.sev]) || (new Date(b.pub) - new Date(a.pub)))
+      .slice(0, 8);
 
     lista.innerHTML = top.map(i => `
       <div class="cve-item">
@@ -619,24 +678,19 @@ async function cargarCVE(){
         <span class="sev sev-${i.sev}">${SEV_TXT[i.sev]}${i.score != null ? " " + i.score.toFixed(1) : ""}</span>
         <div>
           <p class="cve-desc">${escapar(i.desc).slice(0, 220)}${i.desc.length > 220 ? "…" : ""}</p>
-          ${i.score != null ? `<div class="cve-barra"><i style="width:${i.score * 10}%;background:${SEV_COLOR[i.sev]}"></i></div>` : ""}
+          ${i.score != null ? `<div class="cve-barra"><i style="width:${i.score * 10}%;background:${SEV_CSS[i.sev]}"></i></div>` : ""}
         </div>
       </div>`).join("");
-    marcarApi(true);
   }catch(e){
     lista.innerHTML = e.message === "limite"
-      ? '<p class="error-api">NVD limitó las consultas (máx. 5 cada 30 s sin API key). Espera medio minuto y pulsa recargar.</p>'
-      : '<p class="error-api">No se pudo conectar con services.nvd.nist.gov. Reintenta con el botón recargar.</p>';
-    marcarApi(false);
+      ? '<p class="error-api">NVD limitó las consultas (máx. 5 cada 30 segundos sin API key). Espera medio minuto y pulsa Actualizar.</p>'
+      : '<p class="error-api">No se pudo conectar con services.nvd.nist.gov. Reintenta con el botón Actualizar.</p>';
   }
 }
-function escapar(t){
-  return t.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
 $("#cve-recargar").addEventListener("click", cargarCVE);
-setInterval(cargarCVE, 10 * 60 * 1000); // refresco automático cada 10 minutos
+setInterval(cargarCVE, 10 * 60 * 1000);
 
-/* ============ arranque ============ */
+/* ===== arranque ===== */
 cargarDolar();
 cargarCripto();
 cargarHN();
